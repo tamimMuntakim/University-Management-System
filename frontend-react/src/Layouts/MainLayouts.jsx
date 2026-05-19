@@ -1,6 +1,19 @@
 import React from 'react';
 import { Outlet, useNavigate, NavLink } from 'react-router';
 import { useAuth } from '../Providers/AuthProvider';
+import { 
+    HiOutlineViewGrid, 
+    HiOutlineUsers, 
+    HiOutlineOfficeBuilding, 
+    HiOutlineBookOpen, 
+    HiOutlineAcademicCap, 
+    HiOutlineClipboardList, 
+    HiOutlineUserCircle, 
+    HiOutlineHome, 
+    HiOutlinePencilAlt, 
+    HiOutlineStar, 
+    HiOutlineLogout 
+} from 'react-icons/hi';
 
 const BaseLayout = ({ roleTitle, menuItems }) => {
     const { logout, user } = useAuth();
@@ -42,9 +55,9 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                 <div className="p-4 border-t border-base-200">
                     <button 
                         onClick={handleLogout} 
-                        className="btn btn-error btn-outline w-full flex items-center gap-2 group hover:bg-error hover:text-error-content transition-all"
+                        className="btn btn-error btn-outline w-full flex items-center gap-2 hover:text-white font-bold"
                     >
-                        <span>🚪</span> Logout
+                        <HiOutlineLogout className="text-xl" /> Logout
                     </button>
                 </div>
             </aside>
@@ -78,28 +91,28 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
 
 export const AdminLayout = () => {
     const menus = [
-        { path: "/admin", label: "Dashboard", icon: "📊" },
-        { path: "/admin/users", label: "Users", icon: "👥" },
-        { path: "/admin/departments", label: "Departments", icon: "🏢" },
-        { path: "/admin/courses", label: "Courses", icon: "📚" },
+        { path: "/admin", label: "Dashboard", icon: <HiOutlineViewGrid /> },
+        { path: "/admin/users", label: "Users", icon: <HiOutlineUsers /> },
+        { path: "/admin/departments", label: "Departments", icon: <HiOutlineOfficeBuilding /> },
+        { path: "/admin/courses", label: "Courses", icon: <HiOutlineBookOpen /> },
     ];
     return <BaseLayout roleTitle="Admin" menuItems={menus} />;
 };
 
 export const FacultyLayout = () => {
     const menus = [
-        { path: "/faculty", label: "Portal", icon: "🏫" },
-        { path: "/faculty/courses", label: "My Courses", icon: "📝" },
-        { path: "/faculty/profile", label: "Profile", icon: "👤" },
+        { path: "/faculty", label: "Portal", icon: <HiOutlineAcademicCap /> },
+        { path: "/faculty/courses", label: "My Courses", icon: <HiOutlineClipboardList /> },
+        { path: "/faculty/profile", label: "Profile", icon: <HiOutlineUserCircle /> },
     ];
     return <BaseLayout roleTitle="Faculty" menuItems={menus} />;
 };
 
 export const StudentLayout = () => {
     const menus = [
-        { path: "/student", label: "Student Home", icon: "🏠" },
-        { path: "/student/enrollment", label: "Enrollment", icon: "🖊️" },
-        { path: "/student/grades", label: "My Grades", icon: "⭐" },
+        { path: "/student", label: "Student Home", icon: <HiOutlineHome /> },
+        { path: "/student/enrollment", label: "Enrollment", icon: <HiOutlinePencilAlt /> },
+        { path: "/student/grades", label: "My Grades", icon: <HiOutlineStar /> },
     ];
     return <BaseLayout roleTitle="Student" menuItems={menus} />;
 };

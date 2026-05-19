@@ -4,6 +4,8 @@ import PrivateRoute from "../PrivateRoutes/PrivateRoute";
 import { AdminLayout, FacultyLayout, StudentLayout } from "../Layouts/MainLayouts";
 import { AdminDashboard, FacultyDashboard, StudentDashboard } from "../Pages/Dashboards";
 import UsersManagement from "../Pages/UsersManagement";
+import DepartmentsManagement from "../Pages/DepartmentsManagement";
+import CoursesManagement from "../Pages/CoursesManagement";
 
 export const router = createBrowserRouter([
     {
@@ -29,6 +31,14 @@ export const router = createBrowserRouter([
             {
                 path: "users",
                 element: <UsersManagement />,
+            },
+            {
+                path: "departments",
+                element: <DepartmentsManagement />,
+            },
+            {
+                path: "courses",
+                element: <CoursesManagement />,
             },
         ],
     },
