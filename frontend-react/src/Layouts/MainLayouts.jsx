@@ -12,7 +12,8 @@ import {
     HiOutlineHome, 
     HiOutlinePencilAlt, 
     HiOutlineStar, 
-    HiOutlineLogout 
+    HiOutlineLogout,
+    HiOutlineCalendar
 } from 'react-icons/hi';
 
 const BaseLayout = ({ roleTitle, menuItems }) => {
@@ -67,13 +68,20 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                 <header className="h-20 bg-base-100 flex items-center justify-between px-8 border-b border-base-200">
                     <h1 className="text-xl font-bold text-base-content">{roleTitle} Dashboard</h1>
                     <div className="flex items-center gap-4">
-                        <div className="flex flex-col items-end">
-                            <span className="text-sm font-bold">{user?.email}</span>
-                            <span className="text-xs text-base-content/50 uppercase">{roleTitle}</span>
-                        </div>
-                        <div className="avatar placeholder">
-                            <div className="bg-neutral text-neutral-content rounded-full w-10">
-                                <span>{user?.email?.[0].toUpperCase()}</span>
+                        <div className="dropdown dropdown-end dropdown-hover">
+                            <div tabIndex={0} role="button" className="avatar placeholder">
+                                <div className="bg-neutral text-neutral-content rounded-full w-10 flex items-center justify-center font-black ring ring-primary ring-offset-base-100 ring-offset-2 hover:scale-110 transition-transform">
+                                    <span>{(user?.email || 'U')[0].toUpperCase()}</span>
+                                </div>
+                            </div>
+                            <div tabIndex={0} className="dropdown-content z-[1] card card-compact w-64 p-0 shadow-2xl bg-base-100 border border-base-200 mt-2">
+                                <div className="card-body p-3">
+                                    <h3 className="font-bold text-sm truncate">{user?.email || 'Guest User'}</h3>
+                                    <div className="flex gap-2 items-center">
+                                        <span className="badge badge-primary badge-sm font-bold uppercase tracking-tighter scale-90 origin-left">{roleTitle}</span>
+                                        <span className="badge badge-success badge-sm badge-outline scale-90 origin-left font-semibold">Online</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -95,6 +103,7 @@ export const AdminLayout = () => {
         { path: "/admin/users", label: "Users", icon: <HiOutlineUsers /> },
         { path: "/admin/departments", label: "Departments", icon: <HiOutlineOfficeBuilding /> },
         { path: "/admin/courses", label: "Courses", icon: <HiOutlineBookOpen /> },
+        { path: "/admin/offerings", label: "Offerings", icon: <HiOutlineCalendar /> },
     ];
     return <BaseLayout roleTitle="Admin" menuItems={menus} />;
 };

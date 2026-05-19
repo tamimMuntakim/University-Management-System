@@ -16,7 +16,8 @@ export const AdminDashboard = () => {
         totalStudents: 0,
         totalFaculty: 0,
         totalDepartments: 0,
-        totalCourses: 0
+        totalCourses: 0,
+        totalOfferings: 0
     });
     const [loading, setLoading] = useState(true);
 
@@ -41,13 +42,13 @@ export const AdminDashboard = () => {
                 Admin Overview
             </h3>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
                     <div className="stat-figure text-primary opacity-30">
                         <HiOutlineUsers size={40} />
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Total Users</div>
-                    <div className="stat-value text-primary leading-tight">
+                    <div className="stat-value text-primary leading-tight text-3xl">
                         {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalUsers.toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">System accounts</div>
@@ -58,7 +59,7 @@ export const AdminDashboard = () => {
                         <HiOutlineUserGroup size={40} />
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Total Students</div>
-                    <div className="stat-value text-secondary leading-tight">
+                    <div className="stat-value text-secondary leading-tight text-3xl">
                         {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalStudents.toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">Registered profiles</div>
@@ -69,7 +70,7 @@ export const AdminDashboard = () => {
                         <HiOutlineAcademicCap size={40} />
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Total Faculty</div>
-                    <div className="stat-value text-accent leading-tight">
+                    <div className="stat-value text-accent leading-tight text-3xl">
                         {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalFaculty.toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">Verified educators</div>
@@ -80,21 +81,32 @@ export const AdminDashboard = () => {
                         <HiOutlineOfficeBuilding size={40} />
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Departments</div>
-                    <div className="stat-value text-purple-600 leading-tight">
+                    <div className="stat-value text-purple-600 leading-tight text-3xl">
                         {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalDepartments.toLocaleString()}
                     </div>
-                    <div className="stat-desc mt-1">Active faculties</div>
+                    <div className="stat-desc mt-1">Academic units</div>
                 </div>
 
                 <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
                     <div className="stat-figure text-info opacity-30">
                         <HiOutlineBookOpen size={40} />
                     </div>
-                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Courses Offered</div>
-                    <div className="stat-value text-info leading-tight">
+                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Course Catalog</div>
+                    <div className="stat-value text-info leading-tight text-3xl">
                         {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalCourses.toLocaleString()}
                     </div>
-                    <div className="stat-desc mt-1">Total catalog</div>
+                    <div className="stat-desc mt-1">Courses in system</div>
+                </div>
+
+                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
+                    <div className="stat-figure text-orange-500 opacity-30">
+                        <HiOutlineSparkles size={40} />
+                    </div>
+                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Active Offerings</div>
+                    <div className="stat-value text-orange-500 leading-tight text-3xl">
+                        {loading ? <span className="loading loading-spinner loading-sm"></span> : (stats.totalOfferings || 0).toLocaleString()}
+                    </div>
+                    <div className="stat-desc mt-1">Currently offered</div>
                 </div>
             </div>
 

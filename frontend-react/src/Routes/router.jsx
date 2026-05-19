@@ -6,6 +6,7 @@ import { AdminDashboard, FacultyDashboard, StudentDashboard } from "../Pages/Das
 import UsersManagement from "../Pages/UsersManagement";
 import DepartmentsManagement from "../Pages/DepartmentsManagement";
 import CoursesManagement from "../Pages/CoursesManagement";
+import CourseOfferingsManagement from "../Pages/CourseOfferingsManagement";
 
 export const router = createBrowserRouter([
     {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
             {
                 path: "courses",
                 element: <CoursesManagement />,
+            },
+            {
+                path: "offerings",
+                element: <CourseOfferingsManagement />,
             },
         ],
     },

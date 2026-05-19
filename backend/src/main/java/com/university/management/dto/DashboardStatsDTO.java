@@ -13,4 +13,5 @@ public class DashboardStatsDTO {
     private long totalFaculty;
     private long totalDepartments;
     private long totalCourses;
+    private long totalOfferings;
 }

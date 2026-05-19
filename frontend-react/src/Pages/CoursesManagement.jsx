@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
-import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineBookOpen } from 'react-icons/hi';
 
 const CoursesManagement = () => {
     const [courses, setCourses] = useState([]);
@@ -57,8 +57,11 @@ const CoursesManagement = () => {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold text-primary">Course Management</h3>
-                <button 
+                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                    <span className="w-2 h-8 bg-primary rounded-full"></span>
+                    Course Management
+                </h3>
+                <button
                     className="btn btn-primary btn-sm flex items-center gap-2"
                     onClick={() => setIsModalOpen(true)}
                 >
@@ -115,51 +118,58 @@ const CoursesManagement = () => {
             </div>
 
             {isModalOpen && (
-                <div className="modal modal-open">
-                    <div className="modal-box">
-                        <h3 className="font-bold text-lg">Create New Course</h3>
-                        <form onSubmit={handleCreateCourse} className="space-y-4 mt-4">
-                            <div className="form-control">
-                                <label className="label"><span className="label-text">Course Name</span></label>
-                                <input 
-                                    type="text" 
-                                    className="input input-bordered w-full" 
+                <div className="modal modal-open backdrop-blur-sm">
+                    <div className="modal-box max-w-xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
+                        <div className="bg-primary p-6 text-primary-content">
+                            <h3 className="font-bold text-xl flex items-center gap-2">
+                                <HiOutlineBookOpen /> Create New Course
+                            </h3>
+                            <p className="text-sm opacity-80 mt-1">Add a new academic course to the system curriculum.</p>
+                        </div>
+
+                        <form onSubmit={handleCreateCourse} className="p-6 space-y-4">
+                            <div className="form-control w-full">
+                                <label className="label"><span className="label-text font-semibold">Course Name</span></label>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    placeholder="e.g. Advanced Data Structures"
                                     required
                                     value={newCourse.courseName}
-                                    onChange={(e) => setNewCourse({...newCourse, courseName: e.target.value})}
+                                    onChange={(e) => setNewCourse({ ...newCourse, courseName: e.target.value })}
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="form-control">
-                                    <label className="label"><span className="label-text">Course Code</span></label>
-                                    <input 
-                                        type="text" 
-                                        className="input input-bordered w-full" 
-                                        placeholder="e.g. CSE101"
+                                    <label className="label"><span className="label-text font-semibold">Course Code</span></label>
+                                    <input
+                                        type="text"
+                                        className="input input-bordered w-full"
+                                        placeholder="e.g. CSE2101"
                                         required
                                         value={newCourse.courseCode}
-                                        onChange={(e) => setNewCourse({...newCourse, courseCode: e.target.value})}
+                                        onChange={(e) => setNewCourse({ ...newCourse, courseCode: e.target.value })}
                                     />
                                 </div>
                                 <div className="form-control">
-                                    <label className="label"><span className="label-text">Credits</span></label>
-                                    <input 
-                                        type="number" 
-                                        className="input input-bordered w-full" 
+                                    <label className="label"><span className="label-text font-semibold">Credits</span></label>
+                                    <input
+                                        type="number"
+                                        className="input input-bordered w-full"
                                         min="1" max="10"
                                         required
                                         value={newCourse.credits}
-                                        onChange={(e) => setNewCourse({...newCourse, credits: parseInt(e.target.value)})}
+                                        onChange={(e) => setNewCourse({ ...newCourse, credits: parseInt(e.target.value) })}
                                     />
                                 </div>
                             </div>
-                            <div className="form-control">
-                                <label className="label"><span className="label-text">Department</span></label>
-                                <select 
+                            <div className="form-control w-full">
+                                <label className="label"><span className="label-text font-semibold">Department</span></label>
+                                <select
                                     className="select select-bordered w-full"
                                     required
                                     value={newCourse.department.id}
-                                    onChange={(e) => setNewCourse({...newCourse, department: { id: e.target.value }})}
+                                    onChange={(e) => setNewCourse({ ...newCourse, department: { id: e.target.value } })}
                                 >
                                     <option value="" disabled>Select Department</option>
                                     {departments.map(dept => (
@@ -167,9 +177,9 @@ const CoursesManagement = () => {
                                     ))}
                                 </select>
                             </div>
-                            <div className="modal-action">
-                                <button type="button" className="btn btn-soft btn-sm" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary btn-sm">Create Course</button>
+                            <div className="modal-action gap-2 pt-4">
+                                <button type="button" className="btn btn-ghost" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-primary px-8">Create Course</button>
                             </div>
                         </form>
                     </div>

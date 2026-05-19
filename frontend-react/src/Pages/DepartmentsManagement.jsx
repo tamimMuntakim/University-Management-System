@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
-import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineOfficeBuilding } from 'react-icons/hi';
 
 const DepartmentsManagement = () => {
     const [departments, setDepartments] = useState([]);
@@ -41,8 +41,11 @@ const DepartmentsManagement = () => {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold text-primary">Department Management</h3>
-                <button 
+                <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                    <span className="w-2 h-8 bg-primary rounded-full"></span>
+                    Department Management
+                </h3>
+                <button
                     className="btn btn-primary btn-sm flex items-center gap-2"
                     onClick={() => setIsModalOpen(true)}
                 >
@@ -92,33 +95,41 @@ const DepartmentsManagement = () => {
             </div>
 
             {isModalOpen && (
-                <div className="modal modal-open">
-                    <div className="modal-box">
-                        <h3 className="font-bold text-lg">Create New Department</h3>
-                        <form onSubmit={handleCreateDept} className="space-y-4 mt-4">
-                            <div className="form-control">
-                                <label className="label"><span className="label-text">Department Name</span></label>
-                                <input 
-                                    type="text" 
-                                    className="input input-bordered w-full" 
+                <div className="modal modal-open backdrop-blur-sm">
+                    <div className="modal-box max-w-xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
+                        <div className="bg-primary p-6 text-primary-content">
+                            <h3 className="font-bold text-xl flex items-center gap-2">
+                                <HiOutlineOfficeBuilding /> Create New Department
+                            </h3>
+                            <p className="text-sm opacity-80 mt-1">Register a new academic department into the system catalog.</p>
+                        </div>
+
+                        <form onSubmit={handleCreateDept} className="p-6 space-y-4">
+                            <div className="form-control w-full">
+                                <label className="label"><span className="label-text font-semibold">Department Name</span></label>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    placeholder="e.g. Computer Science & Engineering"
                                     required
                                     value={newDept.departmentName}
-                                    onChange={(e) => setNewDept({...newDept, departmentName: e.target.value})}
+                                    onChange={(e) => setNewDept({ ...newDept, departmentName: e.target.value })}
                                 />
                             </div>
-                            <div className="form-control">
-                                <label className="label"><span className="label-text">Department Code</span></label>
-                                <input 
-                                    type="text" 
-                                    className="input input-bordered w-full" 
+                            <div className="form-control w-full">
+                                <label className="label"><span className="label-text font-semibold">Department Code</span></label>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    placeholder="e.g. CSE"
                                     required
                                     value={newDept.deptCode}
-                                    onChange={(e) => setNewDept({...newDept, deptCode: e.target.value})}
+                                    onChange={(e) => setNewDept({ ...newDept, deptCode: e.target.value })}
                                 />
                             </div>
-                            <div className="modal-action">
-                                <button type="button" className="btn btn-soft btn-sm" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary btn-sm">Create Department</button>
+                            <div className="modal-action gap-2 pt-4">
+                                <button type="button" className="btn btn-ghost" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-primary px-8">Create Department</button>
                             </div>
                         </form>
                     </div>

@@ -91,7 +91,8 @@ public class AuthController {
             
             if (isMatch) {
                 String role = user.getRole().getRoleName();
-                return ResponseEntity.ok("{\"token\": \"dummy-jwt-token\", \"role\": \"" + role + "\"}");
+                String email = user.getEmail();
+                return ResponseEntity.ok("{\"token\": \"dummy-jwt-token\", \"role\": \"" + role + "\", \"email\": \"" + email + "\"}");
             }
         } else {
             System.out.println("User not found for email: " + loginRequest.getEmail());

@@ -31,6 +31,9 @@ public class AdminStatsController {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private com.university.management.repository.CourseOfferingRepository offeringRepository;
+
     @GetMapping
     public ResponseEntity<DashboardStatsDTO> getStats() {
         DashboardStatsDTO stats = new DashboardStatsDTO();
@@ -39,6 +42,7 @@ public class AdminStatsController {
         stats.setTotalFaculty(facultyRepository.count());
         stats.setTotalDepartments(departmentRepository.count());
         stats.setTotalCourses(courseRepository.count());
+        stats.setTotalOfferings(offeringRepository.count());
         return ResponseEntity.ok(stats);
     }
 }
