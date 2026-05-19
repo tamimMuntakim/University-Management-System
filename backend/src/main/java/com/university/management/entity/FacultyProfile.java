@@ -31,4 +31,6 @@ public class FacultyProfile {
     private LocalDate joiningDate;
 
     private BigDecimal rating;
+
+    private String gender;
 }

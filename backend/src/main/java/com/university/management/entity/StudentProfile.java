@@ -31,4 +31,6 @@ public class StudentProfile {
 
     @Column(name = "enrollment_semester")
     private String enrollmentSemester;
+
+    private String gender;
 }
