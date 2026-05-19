@@ -1,5 +1,6 @@
 package com.university.management.entity;
 
+import com.university.management.entity.enums.EnrollmentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
@@ -25,4 +26,8 @@ public class Enrollment {
     private LocalDate enrollmentDate;
 
     private String grade;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private EnrollmentStatus status = EnrollmentStatus.ENROLLED;
 }

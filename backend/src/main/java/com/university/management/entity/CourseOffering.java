@@ -1,5 +1,6 @@
 package com.university.management.entity;
 
+import com.university.management.entity.enums.OfferingStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.UUID;
@@ -28,4 +29,8 @@ public class CourseOffering {
 
     @Column(name = "max_capacity")
     private Integer maxCapacity;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private OfferingStatus status = OfferingStatus.UPCOMING;
 }

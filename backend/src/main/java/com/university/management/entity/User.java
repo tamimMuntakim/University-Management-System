@@ -1,5 +1,6 @@
 package com.university.management.entity;
 
+import com.university.management.entity.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.UUID;
@@ -21,4 +22,8 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private UserStatus status = UserStatus.ACTIVE;
 }

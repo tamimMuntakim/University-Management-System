@@ -1,5 +1,6 @@
 package com.university.management.entity;
 
+import com.university.management.entity.enums.StudentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
@@ -33,4 +34,8 @@ public class StudentProfile {
     private String enrollmentSemester;
 
     private String gender;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private StudentStatus status = StudentStatus.ACTIVE;
 }

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useNavigate, NavLink } from 'react-router';
 import { useAuth } from '../Providers/AuthProvider';
 
-const BaseLayout = ({ roleTitle }) => {
+const BaseLayout = ({ roleTitle, menuItems }) => {
     const { logout, user } = useAuth();
     const navigate = useNavigate();
 
@@ -12,32 +12,94 @@ const BaseLayout = ({ roleTitle }) => {
     };
 
     return (
-        <div className="flex h-screen bg-base-200">
+        <div className="flex h-screen bg-base-300">
             {/* Sidebar */}
-            <div className="w-64 bg-primary text-primary-content p-4 shadow-xl">
-                <h2 className="text-2xl font-bold mb-8">UniMS - {roleTitle}</h2>
-                <nav className="space-y-2">
-                    <button className="btn btn-ghost w-full justify-start text-lg">Dashboard</button>
-                    <button className="btn btn-ghost w-full justify-start text-lg">Profile</button>
-                </nav>
-                <div className="absolute bottom-4 w-56">
-                    <button onClick={handleLogout} className="btn btn-error w-full">Logout</button>
+            <aside className="w-72 bg-base-100 flex flex-col shadow-2xl z-20">
+                <div className="p-8 border-b border-base-200">
+                    <h2 className="text-2xl font-black text-primary tracking-tighter italic">UniMS</h2>
+                    <p className="text-xs font-bold text-base-content/40 uppercase tracking-widest mt-1">{roleTitle} Portal</p>
                 </div>
-            </div>
+                
+                <nav className="flex-1 p-4 overflow-y-auto space-y-1">
+                    {menuItems.map((item) => (
+                        <NavLink
+                            key={item.path}
+                            to={item.path}
+                            end
+                            className={({ isActive }) => `
+                                flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
+                                ${isActive 
+                                    ? 'bg-primary text-primary-content shadow-lg shadow-primary/20 font-bold' 
+                                    : 'text-base-content/70 hover:bg-base-200 hover:text-primary'}
+                            `}
+                        >
+                            <span className="text-xl">{item.icon}</span>
+                            <span>{item.label}</span>
+                        </NavLink>
+                    ))}
+                </nav>
+
+                <div className="p-4 border-t border-base-200">
+                    <button 
+                        onClick={handleLogout} 
+                        className="btn btn-error btn-outline w-full flex items-center gap-2 group hover:bg-error hover:text-error-content transition-all"
+                    >
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </aside>
+
             {/* Main Content */}
-            <div className="flex-1 overflow-auto p-8">
-                <header className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-base-content">{roleTitle} Dashboard</h1>
-                    <div className="badge badge-accent p-4 font-bold">User: {user?.email}</div>
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <header className="h-20 bg-base-100 flex items-center justify-between px-8 border-b border-base-200">
+                    <h1 className="text-xl font-bold text-base-content">{roleTitle} Dashboard</h1>
+                    <div className="flex items-center gap-4">
+                        <div className="flex flex-col items-end">
+                            <span className="text-sm font-bold">{user?.email}</span>
+                            <span className="text-xs text-base-content/50 uppercase">{roleTitle}</span>
+                        </div>
+                        <div className="avatar placeholder">
+                            <div className="bg-neutral text-neutral-content rounded-full w-10">
+                                <span>{user?.email?.[0].toUpperCase()}</span>
+                            </div>
+                        </div>
+                    </div>
                 </header>
-                <main className="card bg-base-100 shadow-sm p-6">
-                    <Outlet />
+
+                <main className="flex-1 overflow-y-auto p-8">
+                    <div className="max-w-7xl mx-auto">
+                        <Outlet />
+                    </div>
                 </main>
             </div>
         </div>
     );
 };
 
-export const AdminLayout = () => <BaseLayout roleTitle="Admin" />;
-export const FacultyLayout = () => <BaseLayout roleTitle="Faculty" />;
-export const StudentLayout = () => <BaseLayout roleTitle="Student" />;
+export const AdminLayout = () => {
+    const menus = [
+        { path: "/admin", label: "Dashboard", icon: "📊" },
+        { path: "/admin/users", label: "Users", icon: "👥" },
+        { path: "/admin/departments", label: "Departments", icon: "🏢" },
+        { path: "/admin/courses", label: "Courses", icon: "📚" },
+    ];
+    return <BaseLayout roleTitle="Admin" menuItems={menus} />;
+};
+
+export const FacultyLayout = () => {
+    const menus = [
+        { path: "/faculty", label: "Portal", icon: "🏫" },
+        { path: "/faculty/courses", label: "My Courses", icon: "📝" },
+        { path: "/faculty/profile", label: "Profile", icon: "👤" },
+    ];
+    return <BaseLayout roleTitle="Faculty" menuItems={menus} />;
+};
+
+export const StudentLayout = () => {
+    const menus = [
+        { path: "/student", label: "Student Home", icon: "🏠" },
+        { path: "/student/enrollment", label: "Enrollment", icon: "🖊️" },
+        { path: "/student/grades", label: "My Grades", icon: "⭐" },
+    ];
+    return <BaseLayout roleTitle="Student" menuItems={menus} />;
+};

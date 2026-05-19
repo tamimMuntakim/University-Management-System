@@ -3,6 +3,7 @@ import Login from "../Pages/Login";
 import PrivateRoute from "../PrivateRoutes/PrivateRoute";
 import { AdminLayout, FacultyLayout, StudentLayout } from "../Layouts/MainLayouts";
 import { AdminDashboard, FacultyDashboard, StudentDashboard } from "../Pages/Dashboards";
+import UsersManagement from "../Pages/UsersManagement";
 
 export const router = createBrowserRouter([
     {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
             {
                 index: true,
                 element: <AdminDashboard />,
+            },
+            {
+                path: "users",
+                element: <UsersManagement />,
             },
         ],
     },
