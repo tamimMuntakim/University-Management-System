@@ -10,6 +10,7 @@ import {
     HiOutlineBookOpen,
     HiOutlineStatusOnline
 } from 'react-icons/hi';
+import Swal from 'sweetalert2';
 
 const CourseOfferingsManagement = () => {
     const [offerings, setOfferings] = useState([]);
@@ -17,6 +18,8 @@ const CourseOfferingsManagement = () => {
     const [faculty, setFaculty] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingOffering, setEditingOffering] = useState(null);
     
     const [newOffering, setNewOffering] = useState({
         course: { id: '' },
@@ -42,25 +45,19 @@ const CourseOfferingsManagement = () => {
     const fetchInitialData = async () => {
         setLoading(true);
         try {
-            console.log('Fetching initial data...');
             const [offeringsRes, coursesRes, facultyRes] = await Promise.all([
                 api.get('/courseofferings'),
                 api.get('/courses'),
                 api.get('/courseofferings/faculty-list').catch(err => {
                     console.error('Faculty API failed:', err);
-                    return { data: [] }; // Fallback
+                    return { data: [] }; 
                 })
             ]);
             
-            console.log('Offerings:', offeringsRes.data);
-            console.log('Courses:', coursesRes.data);
-            console.log('Faculty:', facultyRes.data);
-
             setOfferings(offeringsRes.data);
             setCourses(coursesRes.data);
             setFaculty(facultyRes.data);
             
-            // Set defaults if data exists
             if (coursesRes.data.length > 0) {
                 setNewOffering(prev => ({
                     ...prev,
@@ -80,30 +77,88 @@ const CourseOfferingsManagement = () => {
         }
     };
 
-    const handleCreateOffering = async (e) => {
-        e.preventDefault();
+    const fetchOfferings = async () => {
         try {
-            // Ensure numeric maxCapacity
-            const payload = { ...newOffering, maxCapacity: parseInt(newOffering.maxCapacity) };
-            await api.post('/courseofferings', payload);
-            setIsModalOpen(false);
-            // Refresh list
             const res = await api.get('/courseofferings');
             setOfferings(res.data);
-            // Reset some fields but keep course/teacher for batch entry convenience
-            setNewOffering(prev => ({ ...prev, roomNumber: '', section: 'A' }));
         } catch (error) {
-            alert('Failed to create course offering');
+            console.error('Error fetching offerings:', error);
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this offering?')) return;
+    const handleCreateOffering = async (e) => {
+        e.preventDefault();
         try {
-            await api.delete(`/courseofferings/${id}`);
-            setOfferings(offerings.filter(o => o.id !== id));
+            const payload = { ...newOffering, maxCapacity: parseInt(newOffering.maxCapacity) };
+            await api.post('/courseofferings', payload);
+            setIsModalOpen(false);
+            fetchOfferings();
+            setNewOffering(prev => ({ ...prev, roomNumber: '', section: 'A' }));
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Course offering created successfully.',
+                timer: 2000,
+                showConfirmButton: false
+            });
         } catch (error) {
-            alert('Failed to delete offering');
+            Swal.fire('Error', 'Failed to create course offering', 'error');
+        }
+    };
+
+    const handleEditClick = (offering) => {
+        setEditingOffering({
+            ...offering,
+            courseId: offering.course?.id || '',
+            teacherId: offering.teacher?.id || ''
+        });
+        setIsEditModalOpen(true);
+    };
+
+    const handleUpdateOffering = async (e) => {
+        e.preventDefault();
+        try {
+            const payload = {
+                ...editingOffering,
+                course: { id: editingOffering.courseId },
+                teacher: { id: editingOffering.teacherId },
+                maxCapacity: parseInt(editingOffering.maxCapacity)
+            };
+            await api.put(`/courseofferings/${editingOffering.id}`, payload);
+            setIsEditModalOpen(false);
+            setEditingOffering(null);
+            fetchOfferings();
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated!',
+                text: 'Course offering updated successfully.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } catch (error) {
+            Swal.fire('Error', 'Failed to update course offering', 'error');
+        }
+    };
+
+    const handleDelete = async (offering) => {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: `Deleting the offering for "${offering.course?.courseCode}" will remove all student enrollments for this section!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                await api.delete(`/courseofferings/${offering.id}`);
+                fetchOfferings();
+                Swal.fire('Deleted!', 'Offering has been removed.', 'success');
+            } catch (error) {
+                Swal.fire('Error', 'Failed to delete offering.', 'error');
+            }
         }
     };
 
@@ -146,13 +201,14 @@ const CourseOfferingsManagement = () => {
                                         <td>
                                             <div className="flex items-center gap-3">
                                                 <div className="avatar placeholder">
-                                                    <div className="bg-primary/10 text-primary rounded-lg w-10">
+                                                    <div className="bg-primary/10 text-primary rounded-lg w-10 flex items-center justify-center">
                                                         <HiOutlineBookOpen size={20} />
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div className="font-bold text-sm uppercase">{offering.course?.courseCode}</div>
-                                                    <div className="text-xs opacity-60 flex items-center gap-1">
+                                                    <div className="text-[10px] text-base-content/50 leading-tight mb-1">{offering.course?.courseName}</div>
+                                                    <div className="text-xs opacity-60 flex items-center gap-1 mt-0.5">
                                                         <HiOutlineCalendar /> {offering.semester}
                                                     </div>
                                                 </div>
@@ -181,14 +237,17 @@ const CourseOfferingsManagement = () => {
                                         </td>
                                         <td className="text-center">
                                             <div className="flex justify-center gap-2">
-                                                <button className="btn btn-ghost btn-xs text-info hover:bg-info/10">
-                                                    <HiOutlinePencil size={14} />
+                                                <button 
+                                                    className="btn btn-soft btn-sm btn-success hover:text-white px-2"
+                                                    onClick={() => handleEditClick(offering)}
+                                                >
+                                                    <HiOutlinePencil size={16} />
                                                 </button>
                                                 <button 
-                                                    onClick={() => handleDelete(offering.id)}
-                                                    className="btn btn-ghost btn-xs text-error hover:bg-error/10"
+                                                    className="btn btn-soft btn-sm btn-error hover:text-white px-2"
+                                                    onClick={() => handleDelete(offering)}
                                                 >
-                                                    <HiOutlineTrash size={14} />
+                                                    <HiOutlineTrash size={16} />
                                                 </button>
                                             </div>
                                         </td>
@@ -203,7 +262,7 @@ const CourseOfferingsManagement = () => {
             {/* Create Offering Modal */}
             {isModalOpen && (
                 <div className="modal modal-open backdrop-blur-sm">
-                    <div className="modal-box max-w-2xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200">
+                    <div className="modal-box max-w-2xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
                         <div className="bg-primary p-6 text-primary-content">
                             <h3 className="font-bold text-xl flex items-center gap-2">
                                 <HiOutlineStatusOnline /> Offer a New Course
@@ -216,14 +275,14 @@ const CourseOfferingsManagement = () => {
                                 <div className="form-control w-full">
                                     <label className="label"><span className="label-text font-semibold">Select Course</span></label>
                                     <select 
-                                        className="select select-bordered w-full bg-base-100 text-base-content"
+                                        className="select select-bordered w-full"
                                         value={newOffering.course.id}
                                         onChange={(e) => setNewOffering({...newOffering, course: { id: e.target.value }})}
                                         required
                                     >
-                                        <option value="" disabled className="text-base-content/50">Select a course</option>
+                                        <option value="" disabled>Select a course</option>
                                         {courses.map(c => (
-                                            <option key={c.id} value={c.id} className="text-base-content">
+                                            <option key={c.id} value={c.id}>
                                                 {c.courseCode} - {c.courseName}
                                             </option>
                                         ))}
@@ -232,14 +291,14 @@ const CourseOfferingsManagement = () => {
                                 <div className="form-control w-full">
                                     <label className="label"><span className="label-text font-semibold">Assign Faculty</span></label>
                                     <select 
-                                        className="select select-bordered w-full bg-base-100 text-base-content"
+                                        className="select select-bordered w-full"
                                         value={newOffering.teacher.id}
                                         onChange={(e) => setNewOffering({...newOffering, teacher: { id: e.target.value }})}
                                         required
                                     >
-                                        <option value="" disabled className="text-base-content/50">Select a faculty member</option>
+                                        <option value="" disabled>Select a faculty member</option>
                                         {faculty.map(f => (
-                                            <option key={f.id} value={f.id} className="text-base-content">
+                                            <option key={f.id} value={f.id}>
                                                 {f.email}
                                             </option>
                                         ))}
@@ -288,8 +347,118 @@ const CourseOfferingsManagement = () => {
                                 </div>
                             </div>
                             <div className="modal-action gap-2 pt-4">
-                                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                                <button type="submit" className="btn btn-primary px-8 btn-sm">Schedule Offering</button>
+                                <button type="button" className="btn btn-ghost" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-primary px-8">Schedule Offering</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Offering Modal */}
+            {isEditModalOpen && (
+                <div className="modal modal-open backdrop-blur-sm">
+                    <div className="modal-box max-w-2xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
+                        <div className="bg-success p-6 text-success-content">
+                            <h3 className="font-bold text-xl flex items-center gap-2">
+                                <HiOutlinePencil /> Edit Course Offering
+                            </h3>
+                            <p className="text-sm opacity-80 mt-1">Modify scheduling, assignment or capacity for this section.</p>
+                        </div>
+                        
+                        <form onSubmit={handleUpdateOffering} className="p-6 space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Select Course</span></label>
+                                    <select 
+                                        className="select select-bordered w-full"
+                                        value={editingOffering.courseId}
+                                        onChange={(e) => setEditingOffering({...editingOffering, courseId: e.target.value})}
+                                        required
+                                    >
+                                        <option value="" disabled>Select a course</option>
+                                        {courses.map(c => (
+                                            <option key={c.id} value={c.id}>
+                                                {c.courseCode} - {c.courseName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Assign Faculty</span></label>
+                                    <select 
+                                        className="select select-bordered w-full"
+                                        value={editingOffering.teacherId}
+                                        onChange={(e) => setEditingOffering({...editingOffering, teacherId: e.target.value})}
+                                        required
+                                    >
+                                        <option value="" disabled>Select a faculty member</option>
+                                        {faculty.map(f => (
+                                            <option key={f.id} value={f.id}>
+                                                {f.email}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Semester</span></label>
+                                    <input 
+                                        type="text" 
+                                        className="input input-bordered w-full"
+                                        value={editingOffering.semester}
+                                        onChange={(e) => setEditingOffering({...editingOffering, semester: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Section</span></label>
+                                    <input 
+                                        type="text" 
+                                        className="input input-bordered w-full"
+                                        placeholder="e.g. A, B, L1"
+                                        value={editingOffering.section}
+                                        onChange={(e) => setEditingOffering({...editingOffering, section: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Room Number</span></label>
+                                    <input 
+                                        type="text" 
+                                        className="input input-bordered w-full"
+                                        placeholder="e.g. LAB-402"
+                                        value={editingOffering.roomNumber}
+                                        onChange={(e) => setEditingOffering({...editingOffering, roomNumber: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Max Capacity</span></label>
+                                    <input 
+                                        type="number" 
+                                        className="input input-bordered w-full"
+                                        value={editingOffering.maxCapacity}
+                                        onChange={(e) => setEditingOffering({...editingOffering, maxCapacity: e.target.value})}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-control w-full md:col-span-2">
+                                    <label className="label"><span className="label-text font-semibold">Status</span></label>
+                                    <select 
+                                        className="select select-bordered w-full"
+                                        value={editingOffering.status}
+                                        onChange={(e) => setEditingOffering({...editingOffering, status: e.target.value})}
+                                        required
+                                    >
+                                        <option value="UPCOMING">Upcoming</option>
+                                        <option value="ONGOING">Ongoing</option>
+                                        <option value="COMPLETED">Completed</option>
+                                        <option value="CANCELLED">Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="modal-action gap-2 pt-4">
+                                <button type="button" className="btn btn-ghost" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-success text-white px-8">Save Changes</button>
                             </div>
                         </form>
                     </div>

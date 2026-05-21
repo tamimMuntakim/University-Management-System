@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
 import { HiOutlineUserAdd, HiOutlinePencil, HiOutlineTrash, HiOutlineUsers } from 'react-icons/hi';
+import Swal from 'sweetalert2';
 
 const UsersManagement = () => {
     const [users, setUsers] = useState([]);
@@ -8,6 +9,8 @@ const UsersManagement = () => {
     const [roleFilter, setRoleFilter] = useState('ALL');
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
     const [newUser, setNewUser] = useState({
         email: '',
         password: '',
@@ -44,8 +47,76 @@ const UsersManagement = () => {
             setIsModalOpen(false);
             setNewUser({ email: '', password: '', role: 'ROLE_STUDENT' });
             fetchUsers(); // Refresh the list
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'User created successfully.',
+                timer: 2000,
+                showConfirmButton: false
+            });
         } catch (error) {
-            alert('Failed to create user');
+            Swal.fire('Error', 'Failed to create user', 'error');
+        }
+    };
+
+    const handleEditClick = (user) => {
+        setEditingUser({
+            id: user.id,
+            email: user.email,
+            role: user.role?.roleName || 'ROLE_STUDENT',
+            status: user.status || 'ACTIVE'
+        });
+        setIsEditModalOpen(true);
+    };
+
+    const handleUpdateUser = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put(`/users/${editingUser.id}`, {
+                email: editingUser.email,
+                role: { roleName: editingUser.role },
+                status: editingUser.status
+            });
+            setIsEditModalOpen(false);
+            setEditingUser(null);
+            fetchUsers();
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated!',
+                text: 'User information has been updated.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } catch (error) {
+            Swal.fire('Error', 'Failed to update user', 'error');
+        }
+    };
+
+    const handleDeleteUser = async (user) => {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: `You are about to delete user: ${user.email}. This action cannot be reverted!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (result.isConfirmed) {
+            setLoading(true);
+            try {
+                await api.delete(`/users/${user.id}`);
+                await fetchUsers();
+                Swal.fire(
+                    'Deleted!',
+                    'User has been removed from the system.',
+                    'success'
+                );
+            } catch (error) {
+                setLoading(false);
+                Swal.fire('Error', 'Failed to delete user', 'error');
+            }
         }
     };
 
@@ -140,17 +211,23 @@ const UsersManagement = () => {
                                             </div>
                                         </td>
                                         <td className="text-center">
-                                        <div className="flex justify-center gap-2">
-                                            <button className="btn btn-soft btn-sm btn-success hover:text-white px-2">
-                                                <HiOutlinePencil size={16} />
-                                            </button>
-                                            <button className="btn btn-soft btn-sm btn-error hover:text-white px-2">
-                                                <HiOutlineTrash size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )))}
+                                            <div className="flex justify-center gap-2">
+                                                <button 
+                                                    className="btn btn-soft btn-sm btn-success hover:text-white px-2"
+                                                    onClick={() => handleEditClick(user)}
+                                                >
+                                                    <HiOutlinePencil size={16} />
+                                                </button>
+                                                <button 
+                                                    className="btn btn-soft btn-sm btn-error hover:text-white px-2"
+                                                    onClick={() => handleDeleteUser(user)}
+                                                >
+                                                    <HiOutlineTrash size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )))}
                         </tbody>
                     </table>
                 </div>
@@ -198,13 +275,71 @@ const UsersManagement = () => {
                                     onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                                 >
                                     <option value="ROLE_STUDENT">Student</option>
-                                    <option value="ROLE_FACULTY">Faculty Member</option>
-                                    <option value="ROLE_ADMIN">System Administrator</option>
+                                    <option value="ROLE_FACULTY">Faculty</option>
+                                    <option value="ROLE_ADMIN">Administrator</option>
                                 </select>
                             </div>
-                            <div className="modal-action gap-2 pt-4">
+                            <div className="modal-action mt-8 flex gap-3">
                                 <button type="button" className="btn btn-ghost" onClick={() => setIsModalOpen(false)}>Cancel</button>
                                 <button type="submit" className="btn btn-primary px-8">Create Account</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit User Modal */}
+            {isEditModalOpen && (
+                <div className="modal modal-open backdrop-blur-sm">
+                    <div className="modal-box max-w-xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
+                        <div className="bg-success p-6 text-success-content">
+                            <h3 className="font-bold text-xl flex items-center gap-2">
+                                <HiOutlinePencil /> Edit User Account
+                            </h3>
+                            <p className="text-sm opacity-80 mt-1">Update account details and access permissions for this user.</p>
+                        </div>
+                        
+                        <form onSubmit={handleUpdateUser} className="p-6 space-y-4">
+                            <div className="form-control w-full">
+                                <label className="label"><span className="label-text font-semibold">Email Address</span></label>
+                                <input
+                                    type="email"
+                                    className="input input-bordered w-full"
+                                    placeholder="email@university.edu"
+                                    required
+                                    value={editingUser.email}
+                                    onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Access Level</span></label>
+                                    <select
+                                        className="select select-bordered w-full"
+                                        value={editingUser.role}
+                                        onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
+                                    >
+                                        <option value="ROLE_STUDENT">Student</option>
+                                        <option value="ROLE_FACULTY">Faculty</option>
+                                        <option value="ROLE_ADMIN">Administrator</option>
+                                    </select>
+                                </div>
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Account Status</span></label>
+                                    <select
+                                        className="select select-bordered w-full"
+                                        value={editingUser.status}
+                                        onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}
+                                    >
+                                        <option value="ACTIVE">Active</option>
+                                        <option value="SUSPENDED">Suspended</option>
+                                        <option value="DEACTIVATED">Deactivated</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="modal-action mt-8 flex gap-3">
+                                <button type="button" className="btn btn-ghost" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-success text-white px-8">Save Changes</button>
                             </div>
                         </form>
                     </div>
