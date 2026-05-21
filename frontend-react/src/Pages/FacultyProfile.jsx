@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
 import Swal from 'sweetalert2';
+import PageLoader from '../Components/PageLoader';
 import { 
     HiOutlineMail, 
     HiOutlineIdentification, 
@@ -70,11 +71,7 @@ const FacultyProfile = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex justify-center items-center h-64">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
+        return <PageLoader message="Loading your faculty profile..." />;
     }
 
     return (

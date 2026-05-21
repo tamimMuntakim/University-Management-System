@@ -12,6 +12,7 @@ import Enrollment from "../Pages/Enrollment";
 import Grades from "../Pages/Grades";
 import FacultyCourses from "../Pages/FacultyCourses";
 import FacultyProfile from "../Pages/FacultyProfile";
+import Analytics from "../Pages/Analytics";
 
 export const router = createBrowserRouter([
     {
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
             {
                 path: "offerings",
                 element: <CourseOfferingsManagement />,
+            },
+            {
+                path: "analytics",
+                element: <Analytics />,
             },
         ],
     },

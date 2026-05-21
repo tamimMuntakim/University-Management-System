@@ -14,7 +14,8 @@ import {
     HiOutlineStar, 
     HiOutlineLogout,
     HiOutlineCalendar,
-    HiOutlineCheckCircle
+    HiOutlineCheckCircle,
+    HiOutlineChartBar
 } from 'react-icons/hi';
 
 const BaseLayout = ({ roleTitle, menuItems }) => {
@@ -118,6 +119,7 @@ export const AdminLayout = () => {
         { path: "/admin/departments", label: "Departments", icon: <HiOutlineOfficeBuilding /> },
         { path: "/admin/courses", label: "Courses", icon: <HiOutlineBookOpen /> },
         { path: "/admin/offerings", label: "Offerings", icon: <HiOutlineCalendar /> },
+        { path: "/admin/analytics", label: "Analytics", icon: <HiOutlineChartBar /> },
     ];
     return <BaseLayout roleTitle="Admin" menuItems={menus} />;
 };

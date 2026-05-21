@@ -11,6 +11,7 @@ import {
     HiOutlineStatusOnline
 } from 'react-icons/hi';
 import Swal from 'sweetalert2';
+import PageLoader from '../Components/PageLoader';
 
 const CourseOfferingsManagement = () => {
     const [offerings, setOfferings] = useState([]);
@@ -162,6 +163,10 @@ const CourseOfferingsManagement = () => {
         }
     };
 
+    if (loading) {
+        return <PageLoader message="Initializing course offerings schedule..." />;
+    }
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -191,9 +196,7 @@ const CourseOfferingsManagement = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {loading ? (
-                                <tr><td colSpan="5" className="text-center py-10"><span className="loading loading-spinner text-primary"></span></td></tr>
-                            ) : offerings.length === 0 ? (
+                            {offerings.length === 0 ? (
                                 <tr><td colSpan="5" className="text-center py-10 text-base-content/40">No offerings scheduled yet.</td></tr>
                             ) : (
                                 offerings.map((offering) => (

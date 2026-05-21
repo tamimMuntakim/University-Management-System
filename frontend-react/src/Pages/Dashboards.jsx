@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
+import PageLoader from '../Components/PageLoader';
 import { 
     HiOutlineUsers, 
     HiOutlineAcademicCap, 
@@ -39,6 +40,10 @@ export const AdminDashboard = () => {
         fetchStats();
     }, []);
 
+    if (loading) {
+        return <PageLoader message="Loading admin overview..." />;
+    }
+
     return (
         <div className="space-y-6">
             <h3 className="text-xl font-bold text-primary flex items-center gap-2">
@@ -53,7 +58,7 @@ export const AdminDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Total Users</div>
                     <div className="stat-value text-primary leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalUsers.toLocaleString()}
+                        {stats.totalUsers.toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">System accounts</div>
                 </div>
@@ -64,7 +69,7 @@ export const AdminDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Total Students</div>
                     <div className="stat-value text-secondary leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalStudents.toLocaleString()}
+                        {stats.totalStudents.toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">Registered profiles</div>
                 </div>
@@ -75,7 +80,7 @@ export const AdminDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Total Faculty</div>
                     <div className="stat-value text-accent leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalFaculty.toLocaleString()}
+                        {stats.totalFaculty.toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">Verified educators</div>
                 </div>
@@ -86,7 +91,7 @@ export const AdminDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Departments</div>
                     <div className="stat-value text-purple-600 leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalDepartments.toLocaleString()}
+                        {stats.totalDepartments.toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">Academic units</div>
                 </div>
@@ -97,7 +102,7 @@ export const AdminDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Course Catalog</div>
                     <div className="stat-value text-info leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalCourses.toLocaleString()}
+                        {stats.totalCourses.toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">Courses in system</div>
                 </div>
@@ -108,7 +113,7 @@ export const AdminDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Active Offerings</div>
                     <div className="stat-value text-orange-500 leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : (stats.totalOfferings || 0).toLocaleString()}
+                        {(stats.totalOfferings || 0).toLocaleString()}
                     </div>
                     <div className="stat-desc mt-1">Currently offered</div>
                 </div>
@@ -160,6 +165,10 @@ export const FacultyDashboard = () => {
         fetchStats();
     }, []);
 
+    if (loading) {
+        return <PageLoader message="Loading faculty overview..." />;
+    }
+
     return (
         <div className="space-y-6">
             <h3 className="text-xl font-bold text-primary flex items-center gap-2">
@@ -175,7 +184,7 @@ export const FacultyDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Assigned Courses</div>
                     <div className="stat-value text-primary leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalCourses}
+                        {stats.totalCourses}
                     </div>
                     <div className="stat-desc mt-1">Current semester offerings</div>
                 </div>
@@ -187,7 +196,7 @@ export const FacultyDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Active Students</div>
                     <div className="stat-value text-secondary leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalStudents}
+                        {stats.totalStudents}
                     </div>
                     <div className="stat-desc mt-1">Across all sections</div>
                 </div>
@@ -206,11 +215,11 @@ export const FacultyDashboard = () => {
                     <div className="space-y-4 pt-4">
                         <div className="flex justify-between items-center py-2">
                             <span className="text-base-content/60">Designation</span>
-                            <span className="font-bold text-primary">{loading ? "..." : stats.designation}</span>
+                            <span className="font-bold text-primary">{stats.designation}</span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-t border-base-100">
                             <span className="text-base-content/60">Department</span>
-                            <span className="font-bold text-primary">{loading ? "..." : stats.department}</span>
+                            <span className="font-bold text-primary">{stats.department}</span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-t border-base-100">
                             <span className="text-base-content/60">Office Hours</span>
@@ -262,6 +271,10 @@ export const StudentDashboard = () => {
         fetchStats();
     }, []);
 
+    if (loading) {
+        return <PageLoader message="Loading student dashboard metrics..." />;
+    }
+
     return (
         <div className="space-y-6">
             <h3 className="text-xl font-bold text-primary flex items-center gap-2">
@@ -277,7 +290,7 @@ export const StudentDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Current CGPA</div>
                     <div className="stat-value text-primary leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.cgpa.toFixed(2)}
+                        {stats.cgpa.toFixed(2)}
                     </div>
                     <div className="stat-desc mt-1">Academic Standing</div>
                 </div>
@@ -289,7 +302,7 @@ export const StudentDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Credits Completed</div>
                     <div className="stat-value text-secondary leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.creditsCompleted}
+                        {stats.creditsCompleted}
                     </div>
                     <div className="stat-desc mt-1">Towards Graduation</div>
                 </div>
@@ -301,7 +314,7 @@ export const StudentDashboard = () => {
                     </div>
                     <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Total Enrollments</div>
                     <div className="stat-value text-accent leading-tight text-3xl">
-                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalEnrollments}
+                        {stats.totalEnrollments}
                     </div>
                     <div className="stat-desc mt-1">Courses registered</div>
                 </div>
@@ -318,16 +331,16 @@ export const StudentDashboard = () => {
                     <div className="space-y-4 pt-4">
                         <div className="flex justify-between items-center py-2 border-b border-base-100">
                             <span className="text-base-content/60">Registration ID</span>
-                            <span className="font-semibold text-primary">{loading ? "..." : stats.regId}</span>
+                            <span className="font-semibold text-primary">{stats.regId}</span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-b border-base-100">
                             <span className="text-base-content/60">Department</span>
-                            <span className="font-semibold text-primary">{loading ? "..." : stats.department}</span>
+                            <span className="font-semibold text-primary">{stats.department}</span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-b border-base-100">
                             <span className="text-base-content/60">Current Status</span>
                             <span className={`badge badge-ghost font-bold ${stats.status === 'ACTIVE' ? 'text-success' : 'text-warning'}`}>
-                                {loading ? "..." : stats.status}
+                                {stats.status}
                             </span>
                         </div>
                     </div>

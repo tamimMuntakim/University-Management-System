@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
 import { HiOutlineUserAdd, HiOutlinePencil, HiOutlineTrash, HiOutlineUsers } from 'react-icons/hi';
 import Swal from 'sweetalert2';
+import PageLoader from '../Components/PageLoader';
 
 const UsersManagement = () => {
     const [users, setUsers] = useState([]);
@@ -141,6 +142,10 @@ const UsersManagement = () => {
         return roleName.replace('ROLE_', '').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     };
 
+    if (loading) {
+        return <PageLoader message="Fetching users and departments..." />;
+    }
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -189,13 +194,7 @@ const UsersManagement = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="4" className="text-center py-8">
-                                        <span className="loading loading-spinner text-primary"></span>
-                                    </td>
-                                </tr>
-                            ) : filteredUsers.length === 0 ? (
+                            {filteredUsers.length === 0 ? (
                                 <tr>
                                     <td colSpan="4" className="text-center py-8 text-base-content/40">
                                         No users found matching this criteria

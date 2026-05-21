@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
+import PageLoader from '../Components/PageLoader';
 import { 
     HiOutlineAcademicCap, 
     HiOutlineChartBar, 
@@ -48,11 +49,7 @@ const Grades = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex justify-center items-center h-64">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
+        return <PageLoader message="Calculating academic records..." />;
     }
 
     // Group enrollments by semester
