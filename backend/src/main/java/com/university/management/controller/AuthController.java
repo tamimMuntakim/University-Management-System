@@ -35,6 +35,9 @@ public class AuthController {
     private FacultyProfileRepository facultyProfileRepository;
     
     @Autowired
+    private com.university.management.repository.DepartmentRepository departmentRepository;
+
+    @Autowired
     private PasswordEncoder encoder;
 
     @PostMapping("/signup")
@@ -63,13 +66,32 @@ public class AuthController {
         if ("ROLE_STUDENT".equals(requestedRole)) {
             StudentProfile student = new StudentProfile();
             student.setUser(savedUser);
-            student.setStudentRegId("S-" + System.currentTimeMillis()); // Temporary ID
+            // Format: STU-YYYY-RANDOM (4 digits)
+            String year = String.valueOf(LocalDate.now().getYear());
+            String randomId = String.format("%04d", (int)(Math.random() * 10000));
+            student.setStudentRegId("STU-" + year + "-" + randomId);
+            
+            // Set department if provided
+            if (signUpRequest.getDepartmentId() != null) {
+                departmentRepository.findById(signUpRequest.getDepartmentId())
+                    .ifPresent(student::setDepartment);
+            }
+            
             studentProfileRepository.save(student);
         } else if ("ROLE_FACULTY".equals(requestedRole)) {
             FacultyProfile faculty = new FacultyProfile();
             faculty.setUser(savedUser);
-            faculty.setFacultyStaffId("F-" + System.currentTimeMillis()); // Temporary ID
+            String year = String.valueOf(LocalDate.now().getYear());
+            String randomId = String.format("%03d", (int)(Math.random() * 1000));
+            faculty.setFacultyStaffId("FAC-" + year + "-" + randomId);
             faculty.setJoiningDate(LocalDate.now());
+
+            // Set department if provided
+            if (signUpRequest.getDepartmentId() != null) {
+                departmentRepository.findById(signUpRequest.getDepartmentId())
+                    .ifPresent(faculty::setDepartment);
+            }
+
             facultyProfileRepository.save(faculty);
         }
 

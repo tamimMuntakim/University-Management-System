@@ -119,7 +119,8 @@ export const FacultyLayout = () => {
 
 export const StudentLayout = () => {
     const menus = [
-        { path: "/student", label: "Student Home", icon: <HiOutlineHome /> },
+        { path: "/student", label: "Dashboard", icon: <HiOutlineViewGrid /> },
+        { path: "/student/profile", label: "My Profile", icon: <HiOutlineUserCircle /> },
         { path: "/student/enrollment", label: "Enrollment", icon: <HiOutlinePencilAlt /> },
         { path: "/student/grades", label: "My Grades", icon: <HiOutlineStar /> },
     ];

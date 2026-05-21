@@ -7,8 +7,13 @@ const api = axios.create({
 // For future JWT injection
 api.interceptors.request.use((config) => {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.token) {
-        config.headers.Authorization = `Bearer ${user.token}`;
+    if (user) {
+        if (user.token) {
+            config.headers.Authorization = `Bearer ${user.token}`;
+        }
+        if (user.email) {
+            config.headers['X-User-Email'] = user.email;
+        }
     }
     return config;
 });

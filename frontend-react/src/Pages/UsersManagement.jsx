@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 
 const UsersManagement = () => {
     const [users, setUsers] = useState([]);
+    const [departments, setDepartments] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [roleFilter, setRoleFilter] = useState('ALL');
     const [loading, setLoading] = useState(true);
@@ -14,11 +15,13 @@ const UsersManagement = () => {
     const [newUser, setNewUser] = useState({
         email: '',
         password: '',
-        role: 'ROLE_STUDENT'
+        role: 'ROLE_STUDENT',
+        departmentId: ''
     });
 
     useEffect(() => {
         fetchUsers();
+        fetchDepartments();
     }, []);
 
     useEffect(() => {
@@ -40,12 +43,21 @@ const UsersManagement = () => {
         }
     };
 
+    const fetchDepartments = async () => {
+        try {
+            const response = await api.get('/departments');
+            setDepartments(response.data);
+        } catch (error) {
+            console.error('Error fetching departments:', error);
+        }
+    };
+
     const handleCreateUser = async (e) => {
         e.preventDefault();
         try {
             await api.post('/auth/signup', newUser);
             setIsModalOpen(false);
-            setNewUser({ email: '', password: '', role: 'ROLE_STUDENT' });
+            setNewUser({ email: '', password: '', role: 'ROLE_STUDENT', departmentId: '' });
             fetchUsers(); // Refresh the list
             Swal.fire({
                 icon: 'success',
@@ -60,11 +72,14 @@ const UsersManagement = () => {
     };
 
     const handleEditClick = (user) => {
+        // Find if user has a department from profiles (this assumes profile info is nested or fetched)
+        // For simplicity during transition, we'll let admin set it.
         setEditingUser({
             id: user.id,
             email: user.email,
             role: user.role?.roleName || 'ROLE_STUDENT',
-            status: user.status || 'ACTIVE'
+            status: user.status || 'ACTIVE',
+            departmentId: '' // We will load this if available
         });
         setIsEditModalOpen(true);
     };
@@ -75,7 +90,8 @@ const UsersManagement = () => {
             await api.put(`/users/${editingUser.id}`, {
                 email: editingUser.email,
                 role: { roleName: editingUser.role },
-                status: editingUser.status
+                status: editingUser.status,
+                departmentId: editingUser.departmentId
             });
             setIsEditModalOpen(false);
             setEditingUser(null);
@@ -279,6 +295,24 @@ const UsersManagement = () => {
                                     <option value="ROLE_ADMIN">Administrator</option>
                                 </select>
                             </div>
+
+                            {(newUser.role === 'ROLE_STUDENT' || newUser.role === 'ROLE_FACULTY') && (
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Department</span></label>
+                                    <select
+                                        className="select select-bordered w-full"
+                                        value={newUser.departmentId}
+                                        onChange={(e) => setNewUser({ ...newUser, departmentId: e.target.value })}
+                                        required
+                                    >
+                                        <option value="">Select Department</option>
+                                        {departments.map(dept => (
+                                            <option key={dept.id} value={dept.id}>{dept.departmentName}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
                             <div className="modal-action mt-8 flex gap-3">
                                 <button type="button" className="btn btn-ghost" onClick={() => setIsModalOpen(false)}>Cancel</button>
                                 <button type="submit" className="btn btn-primary px-8">Create Account</button>
@@ -337,6 +371,26 @@ const UsersManagement = () => {
                                     </select>
                                 </div>
                             </div>
+
+                            {(editingUser.role === 'ROLE_STUDENT' || editingUser.role === 'ROLE_FACULTY') && (
+                                <div className="form-control w-full">
+                                    <label className="label"><span className="label-text font-semibold">Department</span></label>
+                                    <select
+                                        className="select select-bordered w-full"
+                                        value={editingUser.departmentId}
+                                        onChange={(e) => setEditingUser({ ...editingUser, departmentId: e.target.value })}
+                                    >
+                                        <option value="">No Department / Unchanged</option>
+                                        {departments.map(dept => (
+                                            <option key={dept.id} value={dept.id}>{dept.departmentName}</option>
+                                        ))}
+                                    </select>
+                                    <label className="label">
+                                        <span className="label-text-alt text-base-content/50">Changing this will update the user's academic profile</span>
+                                    </label>
+                                </div>
+                            )}
+
                             <div className="modal-action mt-8 flex gap-3">
                                 <button type="button" className="btn btn-ghost" onClick={() => setIsEditModalOpen(false)}>Cancel</button>
                                 <button type="submit" className="btn btn-success text-white px-8">Save Changes</button>

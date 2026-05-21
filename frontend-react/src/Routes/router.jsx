@@ -7,6 +7,7 @@ import UsersManagement from "../Pages/UsersManagement";
 import DepartmentsManagement from "../Pages/DepartmentsManagement";
 import CoursesManagement from "../Pages/CoursesManagement";
 import CourseOfferingsManagement from "../Pages/CourseOfferingsManagement";
+import StudentProfile from "../Pages/StudentProfile";
 
 export const router = createBrowserRouter([
     {
@@ -72,6 +73,10 @@ export const router = createBrowserRouter([
             {
                 index: true,
                 element: <StudentDashboard />,
+            },
+            {
+                path: "profile",
+                element: <StudentProfile />,
             },
         ],
     },
