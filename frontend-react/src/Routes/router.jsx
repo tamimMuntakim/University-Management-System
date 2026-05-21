@@ -8,6 +8,10 @@ import DepartmentsManagement from "../Pages/DepartmentsManagement";
 import CoursesManagement from "../Pages/CoursesManagement";
 import CourseOfferingsManagement from "../Pages/CourseOfferingsManagement";
 import StudentProfile from "../Pages/StudentProfile";
+import Enrollment from "../Pages/Enrollment";
+import Grades from "../Pages/Grades";
+import FacultyCourses from "../Pages/FacultyCourses";
+import FacultyProfile from "../Pages/FacultyProfile";
 
 export const router = createBrowserRouter([
     {
@@ -60,6 +64,14 @@ export const router = createBrowserRouter([
                 index: true,
                 element: <FacultyDashboard />,
             },
+            {
+                path: "courses",
+                element: <FacultyCourses />,
+            },
+            {
+                path: "profile",
+                element: <FacultyProfile />,
+            },
         ],
     },
     {
@@ -77,6 +89,14 @@ export const router = createBrowserRouter([
             {
                 path: "profile",
                 element: <StudentProfile />,
+            },
+            {
+                path: "enrollment",
+                element: <Enrollment />,
+            },
+            {
+                path: "grades",
+                element: <Grades />,
             },
         ],
     },

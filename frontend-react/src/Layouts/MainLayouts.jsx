@@ -13,7 +13,8 @@ import {
     HiOutlinePencilAlt, 
     HiOutlineStar, 
     HiOutlineLogout,
-    HiOutlineCalendar
+    HiOutlineCalendar,
+    HiOutlineCheckCircle
 } from 'react-icons/hi';
 
 const BaseLayout = ({ roleTitle, menuItems }) => {
@@ -54,6 +55,19 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                 </nav>
 
                 <div className="p-4 border-t border-base-200">
+                    <div className="bg-success/5 border border-success/10 rounded-xl p-2 mb-4 flex items-center justify-between">
+                        <div className="flex items-center justify-center gap-2">
+                            <div className="relative flex items-center">
+                                <HiOutlineCheckCircle className="text-success text-xl" />
+                                <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+                                </span>
+                            </div>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-success leading-none">Portal Status</span>
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-success px-2 py-1 bg-success/20 rounded-full leading-none flex items-center">Active</span>
+                    </div>
                     <button 
                         onClick={handleLogout} 
                         className="btn btn-error btn-outline w-full flex items-center gap-2 hover:text-white font-bold"
@@ -110,9 +124,9 @@ export const AdminLayout = () => {
 
 export const FacultyLayout = () => {
     const menus = [
-        { path: "/faculty", label: "Portal", icon: <HiOutlineAcademicCap /> },
+        { path: "/faculty", label: "Dashboard", icon: <HiOutlineViewGrid /> },
         { path: "/faculty/courses", label: "My Courses", icon: <HiOutlineClipboardList /> },
-        { path: "/faculty/profile", label: "Profile", icon: <HiOutlineUserCircle /> },
+        { path: "/faculty/profile", label: "My Profile", icon: <HiOutlineUserCircle /> },
     ];
     return <BaseLayout roleTitle="Faculty" menuItems={menus} />;
 };

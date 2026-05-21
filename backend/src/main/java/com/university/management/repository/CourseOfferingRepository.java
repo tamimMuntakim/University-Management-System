@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 @Repository
 public interface CourseOfferingRepository extends JpaRepository<CourseOffering, UUID> {
+    java.util.List<CourseOffering> findByTeacherEmail(String email);
 }

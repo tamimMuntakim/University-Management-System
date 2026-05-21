@@ -1,9 +1,10 @@
 package com.university.management.controller;
 
-import com.university.management.entity.StudentProfile;
+import com.university.management.entity.CourseOffering;
+import com.university.management.entity.FacultyProfile;
 import com.university.management.entity.User;
-import com.university.management.repository.EnrollmentRepository;
-import com.university.management.repository.StudentProfileRepository;
+import com.university.management.repository.CourseOfferingRepository;
+import com.university.management.repository.FacultyProfileRepository;
 import com.university.management.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,20 +12,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/student")
-public class StudentPortalController {
+@RequestMapping("/api/faculty")
+public class FacultyPortalController {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private StudentProfileRepository studentProfileRepository;
+    private FacultyProfileRepository facultyProfileRepository;
 
     @Autowired
-    private EnrollmentRepository enrollmentRepository;
+    private CourseOfferingRepository courseOfferingRepository;
 
     private String getEmailFromAuth(Authentication auth, String headerEmail) {
         if (auth != null && auth.getName() != null && !auth.getName().equals("anonymousUser")) {
@@ -34,34 +36,39 @@ public class StudentPortalController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<?> getStudentStats(
+    public ResponseEntity<?> getFacultyStats(
             Authentication authentication,
             @RequestHeader(value = "X-User-Email", required = false) String headerEmail) {
         
         String email = getEmailFromAuth(authentication, headerEmail);
         if (email == null) return ResponseEntity.status(401).body("User not authenticated");
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<CourseOffering> myOfferings = courseOfferingRepository.findByTeacherEmail(email);
+        
+        long totalStudents = myOfferings.stream()
+                .flatMap(offering -> offering.getEnrollments().stream())
+                .filter(e -> e.getStatus() != com.university.management.entity.enums.EnrollmentStatus.DROPPED)
+                .count();
 
         Map<String, Object> stats = new HashMap<>();
+        stats.put("totalCourses", myOfferings.size());
+        stats.put("totalStudents", totalStudents);
         
-        studentProfileRepository.findByUserEmail(email)
-                .ifPresentOrElse(profile -> {
-                    stats.put("cgpa", profile.getCgpa() != null ? profile.getCgpa() : 0.0);
-                    stats.put("creditsCompleted", profile.getCreditsCompleted() != null ? profile.getCreditsCompleted() : 0);
-                    stats.put("status", profile.getStatus());
-                    stats.put("regId", profile.getStudentRegId());
-                    stats.put("department", profile.getDepartment() != null ? profile.getDepartment().getDepartmentName() : "N/A");
-                }, () -> {
-                    stats.put("cgpa", 0.0);
-                    stats.put("creditsCompleted", 0);
-                    stats.put("status", "N/A");
-                });
-
-        stats.put("totalEnrollments", enrollmentRepository.countByStudentEmail(email));
+        facultyProfileRepository.findByUserEmail(email).ifPresent(profile -> {
+            stats.put("designation", profile.getDesignation());
+            stats.put("department", profile.getDepartment() != null ? profile.getDepartment().getDepartmentName() : "N/A");
+        });
 
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/courses")
+    public ResponseEntity<?> getMyCourses(
+            Authentication authentication,
+            @RequestHeader(value = "X-User-Email", required = false) String headerEmail) {
+        String email = getEmailFromAuth(authentication, headerEmail);
+        if (email == null) return ResponseEntity.status(401).body("User not authenticated");
+        return ResponseEntity.ok(courseOfferingRepository.findByTeacherEmail(email));
     }
 
     @GetMapping("/profile")
@@ -75,29 +82,21 @@ public class StudentPortalController {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        StudentProfile profile = studentProfileRepository.findByUserEmail(email).orElse(null);
+        FacultyProfile profile = facultyProfileRepository.findByUserEmail(email).orElse(null);
 
         Map<String, Object> response = new HashMap<>();
         response.put("email", user.getEmail());
         response.put("userId", user.getId());
         if (profile != null) {
             response.put("id", profile.getId());
-            response.put("studentRegId", profile.getStudentRegId());
+            response.put("facultyStaffId", profile.getFacultyStaffId());
+            response.put("designation", profile.getDesignation());
             response.put("gender", profile.getGender());
-            response.put("enrollmentSemester", profile.getEnrollmentSemester());
             response.put("departmentName", profile.getDepartment() != null ? profile.getDepartment().getDepartmentName() : "N/A");
+            response.put("status", profile.getStatus());
         }
 
         return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/enrollments")
-    public ResponseEntity<?> getMyEnrollments(
-            Authentication authentication,
-            @RequestHeader(value = "X-User-Email", required = false) String headerEmail) {
-        String email = getEmailFromAuth(authentication, headerEmail);
-        if (email == null) return ResponseEntity.status(401).body("User not authenticated");
-        return ResponseEntity.ok(enrollmentRepository.findByStudentEmail(email));
     }
 
     @PutMapping("/profile")
@@ -109,14 +108,17 @@ public class StudentPortalController {
         String email = getEmailFromAuth(authentication, headerEmail);
         if (email == null) return ResponseEntity.status(401).body("User not authenticated");
 
-        StudentProfile profile = studentProfileRepository.findByUserEmail(email)
-                .orElseThrow(() -> new RuntimeException("Student Profile not found"));
+        FacultyProfile profile = facultyProfileRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("Faculty Profile not found"));
 
         if (updates.containsKey("gender")) {
             profile.setGender((String) updates.get("gender"));
         }
+        if (updates.containsKey("designation")) {
+            profile.setDesignation((String) updates.get("designation"));
+        }
         
-        studentProfileRepository.save(profile);
+        facultyProfileRepository.save(profile);
         return ResponseEntity.ok(profile);
     }
 }

@@ -6,4 +6,5 @@ import java.util.UUID;
 @Repository
 public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID> {
     long countByStudentEmail(String email);
+    java.util.List<Enrollment> findByStudentEmail(String email);
 }

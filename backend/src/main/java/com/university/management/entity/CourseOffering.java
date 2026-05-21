@@ -41,4 +41,9 @@ public class CourseOffering {
     @OneToMany(mappedBy = "offeredCourse", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Enrollment> enrollments;
+
+    @com.fasterxml.jackson.annotation.JsonProperty("enrolledCount")
+    public int getEnrolledCount() {
+        return enrollments != null ? (int) enrollments.stream().filter(e -> e.getStatus() != com.university.management.entity.enums.EnrollmentStatus.DROPPED).count() : 0;
+    }
 }

@@ -6,12 +6,12 @@ import {
     HiOutlineUserGroup, 
     HiOutlineOfficeBuilding, 
     HiOutlineBookOpen,
-    HiOutlineCheckCircle,
     HiOutlineSparkles,
     HiOutlineHashtag,
     HiOutlineChartBar,
     HiOutlineDocumentText,
-    HiOutlineClipboardList
+    HiOutlineClipboardList,
+    HiOutlineUserCircle
 } from 'react-icons/hi';
 
 export const AdminDashboard = () => {
@@ -115,17 +115,19 @@ export const AdminDashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="card bg-base-100 border border-base-200 shadow-sm p-6">
-                    <h4 className="card-title text-base-content/80 mb-4">Recent System Activity</h4>
+                {/* System Activity Placeholder */}
+                <div className="card bg-base-100 border border-base-200 shadow-sm p-6 overflow-hidden relative">
+                    <div className="absolute -top-4 -right-4 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+                    <h4 className="card-title text-base-content/80 mb-4">Admin Resources</h4>
                     <div className="divider my-0"></div>
-                    <div className="space-y-4 pt-4">
+                    <div className="space-y-4 pt-4 relative z-10">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-success">
-                                <HiOutlineCheckCircle size={24} />
+                            <div className="w-10 h-10 rounded-full bg-info/10 flex items-center justify-center text-info">
+                                <HiOutlineDocumentText size={24} />
                             </div>
                             <div>
-                                <p className="font-semibold">System Online</p>
-                                <p className="text-sm text-base-content/60">Real-time statistics are now active.</p>
+                                <p className="font-semibold">System Logs</p>
+                                <p className="text-sm text-base-content/60">Review security and access logs.</p>
                             </div>
                         </div>
                     </div>
@@ -135,12 +137,105 @@ export const AdminDashboard = () => {
     );
 };
 
-export const FacultyDashboard = () => (
-    <div>
-        <h3 className="text-xl font-semibold mb-4 text-primary">Faculty Portal</h3>
-        <p className="text-base-content/70">Welcome to your academic dashboard. Manage your courses and grades here.</p>
-    </div>
-);
+export const FacultyDashboard = () => {
+    const [stats, setStats] = useState({
+        totalCourses: 0,
+        totalStudents: 0,
+        designation: 'N/A',
+        department: 'N/A'
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await api.get('/faculty/stats');
+                setStats(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching faculty stats:", error);
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    return (
+        <div className="space-y-6">
+            <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                <span className="w-2 h-8 bg-primary rounded-full"></span>
+                Faculty Overview
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Total Courses */}
+                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
+                    <div className="stat-figure text-primary opacity-30">
+                        <HiOutlineBookOpen size={40} />
+                    </div>
+                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Assigned Courses</div>
+                    <div className="stat-value text-primary leading-tight text-3xl">
+                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalCourses}
+                    </div>
+                    <div className="stat-desc mt-1">Current semester offerings</div>
+                </div>
+
+                {/* Total Students */}
+                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
+                    <div className="stat-figure text-secondary opacity-30">
+                        <HiOutlineUserGroup size={40} />
+                    </div>
+                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Active Students</div>
+                    <div className="stat-value text-secondary leading-tight text-3xl">
+                        {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalStudents}
+                    </div>
+                    <div className="stat-desc mt-1">Across all sections</div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Faculty Profile Card */}
+                <div className="card bg-base-100 border border-base-200 shadow-sm p-6 overflow-hidden relative">
+                    <div className="absolute top-0 right-0 p-8 transform translate-x-1/4 -translate-y-1/4 opacity-10">
+                        <HiOutlineAcademicCap size={120} />
+                    </div>
+                    <h4 className="card-title text-base-content/80 mb-4 flex items-center gap-2">
+                        <HiOutlineSparkles className="text-primary" /> Faculty Details
+                    </h4>
+                    <div className="divider my-0"></div>
+                    <div className="space-y-4 pt-4">
+                        <div className="flex justify-between items-center py-2">
+                            <span className="text-base-content/60">Designation</span>
+                            <span className="font-bold text-primary">{loading ? "..." : stats.designation}</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-t border-base-100">
+                            <span className="text-base-content/60">Department</span>
+                            <span className="font-bold text-primary">{loading ? "..." : stats.department}</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-t border-base-100">
+                            <span className="text-base-content/60">Office Hours</span>
+                            <span className="font-semibold text-secondary italic">Mon-Fri (2:00PM - 4:00PM)</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Quick Actions Card */}
+                <div className="card bg-base-100 border border-base-200 shadow-sm p-6">
+                    <h4 className="card-title text-base-content/80 mb-4">Quick Navigation</h4>
+                    <div className="divider my-0"></div>
+                    <div className="grid grid-cols-2 gap-4 pt-4">
+                        <button className="btn btn-outline btn-primary gap-2 h-auto py-4">
+                            <HiOutlineClipboardList size={20} /> My Courses
+                        </button>
+                        <button className="btn btn-outline btn-secondary gap-2 h-auto py-4">
+                            <HiOutlineUserCircle size={20} /> Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export const StudentDashboard = () => {
     const [stats, setStats] = useState({
@@ -174,42 +269,43 @@ export const StudentDashboard = () => {
                 Student Dashboard
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* CGPA Stat */}
-                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md text-center lg:text-left">
+                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
                     <div className="stat-figure text-primary opacity-30">
                         <HiOutlineChartBar size={40} />
                     </div>
-                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap text-center">Current CGPA</div>
-                    <div className="stat-value text-primary leading-tight text-3xl text-center">
+                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Current CGPA</div>
+                    <div className="stat-value text-primary leading-tight text-3xl">
                         {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.cgpa.toFixed(2)}
                     </div>
-                    <div className="stat-desc mt-1 text-center">Academic Standing</div>
+                    <div className="stat-desc mt-1">Academic Standing</div>
                 </div>
 
                 {/* Credits Completed */}
-                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md text-center lg:text-left">
+                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
                     <div className="stat-figure text-secondary opacity-30">
                         <HiOutlineClipboardList size={40} />
                     </div>
-                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap text-center">Credits Completed</div>
-                    <div className="stat-value text-secondary leading-tight text-3xl text-center">
+                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Credits Completed</div>
+                    <div className="stat-value text-secondary leading-tight text-3xl">
                         {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.creditsCompleted}
                     </div>
-                    <div className="stat-desc mt-1 text-center">Towards Graduation</div>
+                    <div className="stat-desc mt-1">Towards Graduation</div>
                 </div>
 
                 {/* Total Enrollments */}
-                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md text-center lg:text-left">
+                <div className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
                     <div className="stat-figure text-accent opacity-30">
                         <HiOutlineBookOpen size={40} />
                     </div>
-                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap text-center">Total Enrollments</div>
-                    <div className="stat-value text-accent leading-tight text-3xl text-center">
+                    <div className="stat-title text-base-content/60 font-medium whitespace-nowrap">Total Enrollments</div>
+                    <div className="stat-value text-accent leading-tight text-3xl">
                         {loading ? <span className="loading loading-spinner loading-sm"></span> : stats.totalEnrollments}
                     </div>
-                    <div className="stat-desc mt-1 text-center">Courses registered</div>
+                    <div className="stat-desc mt-1">Courses registered</div>
                 </div>
+
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
