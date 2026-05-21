@@ -25,6 +25,7 @@ const FacultyProfile = () => {
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
+        document.title = "My Profile | UniMS";
         const fetchProfile = async () => {
             try {
                 const response = await api.get('/faculty/profile');

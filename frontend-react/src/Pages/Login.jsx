@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../Providers/AuthProvider';
 import api from '../Services/api';
@@ -9,6 +9,10 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = "Login | UniMS";
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

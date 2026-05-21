@@ -40,6 +40,7 @@ const Analytics = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        document.title = "System Analytics | UniMS";
         const fetchAnalytics = async () => {
             try {
                 const response = await api.get('/admin/analytics');

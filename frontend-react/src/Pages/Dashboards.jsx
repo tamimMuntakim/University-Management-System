@@ -27,6 +27,7 @@ export const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        document.title = "Admin Dashboard | UniMS";
         const fetchStats = async () => {
             try {
                 const response = await api.get('/admin/stats');
@@ -152,6 +153,7 @@ export const FacultyDashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        document.title = "Faculty Dashboard | UniMS";
         const fetchStats = async () => {
             try {
                 const response = await api.get('/faculty/stats');
@@ -258,6 +260,7 @@ export const StudentDashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        document.title = "Student Dashboard | UniMS";
         const fetchStats = async () => {
             try {
                 const response = await api.get('/student/stats');

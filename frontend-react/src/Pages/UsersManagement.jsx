@@ -21,6 +21,7 @@ const UsersManagement = () => {
     });
 
     useEffect(() => {
+        document.title = "User Management | UniMS";
         fetchUsers();
         fetchDepartments();
     }, []);

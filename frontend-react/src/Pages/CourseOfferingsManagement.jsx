@@ -40,6 +40,7 @@ const CourseOfferingsManagement = () => {
     };
 
     useEffect(() => {
+        document.title = "Course Offerings | UniMS";
         fetchInitialData();
     }, []);
 

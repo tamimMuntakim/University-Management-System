@@ -18,6 +18,7 @@ const CoursesManagement = () => {
     });
 
     useEffect(() => {
+        document.title = "Course Management | UniMS";
         fetchInitialData();
     }, []);
 

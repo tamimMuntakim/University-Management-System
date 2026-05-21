@@ -15,6 +15,7 @@ const FacultyCourses = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        document.title = "My Courses | UniMS";
         const fetchCourses = async () => {
             try {
                 const response = await api.get('/faculty/courses');

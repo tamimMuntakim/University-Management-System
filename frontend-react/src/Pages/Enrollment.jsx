@@ -17,6 +17,7 @@ const Enrollment = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        document.title = "Course Enrollment | UniMS";
         fetchData();
     }, []);
 

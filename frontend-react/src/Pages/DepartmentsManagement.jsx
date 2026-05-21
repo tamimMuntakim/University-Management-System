@@ -15,6 +15,7 @@ const DepartmentsManagement = () => {
     });
 
     useEffect(() => {
+        document.title = "Department Management | UniMS";
         fetchDepartments();
     }, []);
 

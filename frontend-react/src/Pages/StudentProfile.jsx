@@ -25,6 +25,7 @@ const StudentProfile = () => {
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
+        document.title = "My Profile | UniMS";
         const fetchProfile = async () => {
             try {
                 // We'll use a combined approach or separate calls. 

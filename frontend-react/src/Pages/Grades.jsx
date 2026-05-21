@@ -20,6 +20,7 @@ const Grades = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        document.title = "Grades & Transcript | UniMS";
         fetchGradeData();
     }, []);
 
