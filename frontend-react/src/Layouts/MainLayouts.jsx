@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate, NavLink } from 'react-router';
 import { useAuth } from '../Providers/AuthProvider';
+import Swal from 'sweetalert2';
 import { 
     HiOutlineViewGrid, 
     HiOutlineUsers, 
@@ -23,8 +24,28 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        logout();
-        navigate('/login');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will need to login again to access your portal!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, logout!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                logout();
+                navigate('/login');
+                Swal.fire({
+                    title: 'Logged Out!',
+                    text: 'You have been successfully logged out.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
+        });
     };
 
     return (

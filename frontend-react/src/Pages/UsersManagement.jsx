@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
-import { HiOutlineUserAdd, HiOutlinePencil, HiOutlineTrash, HiOutlineUsers } from 'react-icons/hi';
+import { 
+    HiOutlineUserAdd, 
+    HiOutlinePencil, 
+    HiOutlineTrash, 
+    HiOutlineUsers, 
+    HiOutlineSearch,
+    HiOutlineUserGroup,
+    HiOutlineAcademicCap,
+    HiOutlineBriefcase
+} from 'react-icons/hi';
 import Swal from 'sweetalert2';
 import PageLoader from '../Components/PageLoader';
 
@@ -9,6 +18,7 @@ const UsersManagement = () => {
     const [departments, setDepartments] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [roleFilter, setRoleFilter] = useState('ALL');
+    const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -27,12 +37,21 @@ const UsersManagement = () => {
     }, []);
 
     useEffect(() => {
-        if (roleFilter === 'ALL') {
-            setFilteredUsers(users);
-        } else {
-            setFilteredUsers(users.filter(u => u.role?.roleName === roleFilter));
+        let result = users;
+        
+        // Apply role filter
+        if (roleFilter !== 'ALL') {
+            result = result.filter(u => u.role?.roleName === roleFilter);
         }
-    }, [roleFilter, users]);
+        
+        // Apply search query (email based)
+        if (searchQuery.trim() !== '') {
+            const query = searchQuery.toLowerCase();
+            result = result.filter(u => u.email?.toLowerCase().includes(query));
+        }
+        
+        setFilteredUsers(result);
+    }, [roleFilter, searchQuery, users]);
 
     const fetchUsers = async () => {
         try {
@@ -74,14 +93,20 @@ const UsersManagement = () => {
     };
 
     const handleEditClick = (user) => {
-        // Find if user has a department from profiles (this assumes profile info is nested or fetched)
-        // For simplicity during transition, we'll let admin set it.
+        // Find if user has a department from profiles
+        let existingDeptId = '';
+        if (user.role?.roleName === 'ROLE_STUDENT' && user.studentProfile?.department) {
+            existingDeptId = user.studentProfile.department.id;
+        } else if (user.role?.roleName === 'ROLE_FACULTY' && user.facultyProfile?.department) {
+            existingDeptId = user.facultyProfile.department.id;
+        }
+
         setEditingUser({
             id: user.id,
             email: user.email,
             role: user.role?.roleName || 'ROLE_STUDENT',
             status: user.status || 'ACTIVE',
-            departmentId: '' // We will load this if available
+            departmentId: existingDeptId
         });
         setIsEditModalOpen(true);
     };
@@ -149,32 +174,89 @@ const UsersManagement = () => {
 
     return (
         <div className="space-y-6">
+            {/* User Statistics Counter */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 text-primary rounded-lg">
+                        <HiOutlineUsers size={20} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-base-content/50 uppercase tracking-wider">Total</p>
+                        <h4 className="text-lg font-black leading-none text-primary">{users.length}</h4>
+                    </div>
+                </div>
+                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                    <div className="p-2 bg-info/10 text-info rounded-lg">
+                        <HiOutlineUsers size={20} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-base-content/50 uppercase tracking-wider">Admins</p>
+                        <h4 className="text-lg font-black leading-none text-info">{users.filter(u => u.role?.roleName === 'ROLE_ADMIN').length}</h4>
+                    </div>
+                </div>
+                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                    <div className="p-2 bg-accent/10 text-accent rounded-lg">
+                        <HiOutlineAcademicCap size={20} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-base-content/50 uppercase tracking-wider">Faculty</p>
+                        <h4 className="text-lg font-black leading-none text-accent">{users.filter(u => u.role?.roleName === 'ROLE_FACULTY').length}</h4>
+                    </div>
+                </div>
+                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                    <div className="p-2 bg-secondary/10 text-secondary rounded-lg">
+                        <HiOutlineUserGroup size={20} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-base-content/50 uppercase tracking-wider">Students</p>
+                        <h4 className="text-lg font-black leading-none text-secondary">{users.filter(u => u.role?.roleName === 'ROLE_STUDENT').length}</h4>
+                    </div>
+                </div>
+            </div>
+
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1">
-                    <h3 className="text-xl font-bold text-primary flex items-center gap-2">
+                <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1 w-full">
+                    <h3 className="text-xl font-bold text-primary flex items-center gap-2 whitespace-nowrap">
                         <span className="w-2 h-8 bg-primary rounded-full"></span>
                         User Management
                     </h3>
                     
-                    <div className="join bg-base-100 border border-base-200 shadow-sm rounded-xl">
-                        <div className="join-item px-4 flex items-center bg-base-200/50 border-r border-base-200">
-                            <span className="text-xs font-bold uppercase tracking-widest opacity-50">Filter</span>
+                    <div className="flex flex-wrap gap-2 flex-1">
+                        {/* Search Bar */}
+                        <div className="relative flex-1 min-w-[200px]">
+                            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-base-content/40">
+                                <HiOutlineSearch size={18} />
+                            </span>
+                            <input
+                                type="text"
+                                placeholder="Search by email..."
+                                className="input input-bordered input-sm w-full pl-10 h-10 rounded-xl focus:outline-none focus:border-primary"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
                         </div>
-                        <select 
-                            className="select select-ghost select-sm join-item font-semibold focus:outline-none"
-                            value={roleFilter}
-                            onChange={(e) => setRoleFilter(e.target.value)}
-                        >
-                            <option value="ALL">All Users</option>
-                            <option value="ROLE_ADMIN">Admins</option>
-                            <option value="ROLE_FACULTY">Faculty</option>
-                            <option value="ROLE_STUDENT">Students</option>
-                        </select>
+
+                        {/* Role Filter */}
+                        <div className="join bg-base-100 border border-base-200 shadow-sm rounded-xl h-10">
+                            <div className="join-item px-4 flex items-center bg-base-200/50 border-r border-base-200">
+                                <span className="text-xs font-bold uppercase tracking-widest opacity-50">Filter</span>
+                            </div>
+                            <select 
+                                className="select select-ghost select-sm join-item font-semibold focus:outline-none h-full"
+                                value={roleFilter}
+                                onChange={(e) => setRoleFilter(e.target.value)}
+                            >
+                                <option value="ALL">All Roles</option>
+                                <option value="ROLE_ADMIN">Admins</option>
+                                <option value="ROLE_FACULTY">Faculty</option>
+                                <option value="ROLE_STUDENT">Students</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <button
-                    className="btn btn-primary btn-sm flex items-center gap-2"
+                    className="btn btn-primary btn-sm flex items-center gap-2 h-10 px-4 rounded-xl"
                     onClick={() => setIsModalOpen(true)}
                 >
                     <HiOutlineUserAdd size={18} />
@@ -188,6 +270,7 @@ const UsersManagement = () => {
                     <table className="table table-pin-rows table-zebra">
                         <thead>
                             <tr>
+                                <th className="w-16 text-center">#</th>
                                 <th>User</th>
                                 <th className="text-center">Access Level</th>
                                 <th>Status</th>
@@ -197,13 +280,14 @@ const UsersManagement = () => {
                         <tbody>
                             {filteredUsers.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="text-center py-8 text-base-content/40">
+                                    <td colSpan="5" className="text-center py-8 text-base-content/40">
                                         No users found matching this criteria
                                     </td>
                                 </tr>
                             ) : (
-                                filteredUsers.map((user) => (
+                                filteredUsers.map((user, index) => (
                                     <tr key={user.id}>
+                                        <td className="text-center font-mono text-xs opacity-50">{index + 1}</td>
                                         <td>
                                             <div className="flex items-center gap-3">
                                                 <div className="avatar placeholder">
