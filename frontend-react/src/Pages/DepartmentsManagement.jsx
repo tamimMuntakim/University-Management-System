@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
-import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineOfficeBuilding } from 'react-icons/hi';
+import { 
+    HiOutlinePlus, 
+    HiOutlinePencil, 
+    HiOutlineTrash, 
+    HiOutlineOfficeBuilding,
+    HiOutlineCollection,
+    HiOutlineHashtag
+} from 'react-icons/hi';
 import Swal from 'sweetalert2';
 
 const DepartmentsManagement = () => {
@@ -97,6 +104,30 @@ const DepartmentsManagement = () => {
 
     return (
         <div className="space-y-6">
+            {/* Statistics Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 text-primary rounded-lg">
+                        <HiOutlineCollection size={20} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-base-content/50 uppercase tracking-wider">Total Depts</p>
+                        <h4 className="text-lg font-black leading-none text-primary">{departments.length}</h4>
+                    </div>
+                </div>
+                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                    <div className="p-2 bg-info/10 text-info rounded-lg">
+                        <HiOutlineHashtag size={20} />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-base-content/50 uppercase tracking-wider">Unique Codes</p>
+                        <h4 className="text-lg font-black leading-none text-info">
+                            {new Set(departments.map(d => d.deptCode)).size}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
             <div className="flex justify-between items-center">
                 <h3 className="text-xl font-bold text-primary flex items-center gap-2">
                     <span className="w-2 h-8 bg-primary rounded-full"></span>
@@ -116,6 +147,7 @@ const DepartmentsManagement = () => {
                     <table className="table table-pin-rows table-zebra">
                         <thead>
                             <tr>
+                                <th className="w-16 text-center">#</th>
                                 <th>Department Name</th>
                                 <th className="text-center">Code</th>
                                 <th className="text-center">Actions</th>
@@ -124,11 +156,12 @@ const DepartmentsManagement = () => {
                         <tbody>
                             {departments.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3" className="text-center py-8 text-base-content/40">No departments found</td>
+                                    <td colSpan="4" className="text-center py-8 text-base-content/40">No departments found</td>
                                 </tr>
                             ) : (
-                                departments.map((dept) => (
+                                departments.map((dept, index) => (
                                     <tr key={dept.id}>
+                                        <td className="text-center font-mono text-xs opacity-50">{index + 1}</td>
                                         <td className="font-bold">{dept.departmentName}</td>
                                         <td className="text-center">
                                             <span className="badge badge-neutral badge-sm font-bold">{dept.deptCode}</span>
