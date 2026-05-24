@@ -23,4 +23,8 @@ public class AnalyticsDTO {
     private Map<String, Long> facultiesByDepartment;
     private Map<String, Long> coursesByDepartment;
     private Map<String, Double> averageCgpaByDepartment;
+
+    private Map<String, Long> offeringsByDepartment;
+    private Map<String, Long> enrollmentByCourse; // Top Popular Courses
+    private Map<String, Double> facultyRatings; // Top Rated Teachers
 }

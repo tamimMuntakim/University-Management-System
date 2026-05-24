@@ -19,6 +19,7 @@ public class AnalyticsService {
     private final FacultyProfileRepository facultyRepository;
     private final DepartmentRepository departmentRepository;
     private final CourseRepository courseRepository;
+    private final CourseOfferingRepository courseOfferingRepository;
 
     public AnalyticsDTO getAdminAnalytics() {
         AnalyticsDTO dto = new AnalyticsDTO();
@@ -27,6 +28,8 @@ public class AnalyticsService {
         dto.setTotalFaculties(facultyRepository.count());
         dto.setTotalDepartments(departmentRepository.count());
         dto.setTotalCourses(courseRepository.count());
+
+        List<com.university.management.entity.CourseOffering> allOfferings = courseOfferingRepository.findAll();
 
         // Gender Distribution
         dto.setStudentsByGender(groupBy(studentRepository.findAll().stream()
@@ -58,6 +61,40 @@ public class AnalyticsService {
             coursesByDept.put(deptLabel, coursesByDept.getOrDefault(deptLabel, 0L) + 1);
         });
         dto.setCoursesByDepartment(coursesByDept);
+
+        // Course Offerings by Department
+        Map<String, Long> offeringsByDept = new HashMap<>();
+        allOfferings.forEach(o -> {
+            String deptLabel = (o.getCourse() != null && o.getCourse().getDepartment() != null) 
+                ? o.getCourse().getDepartment().getDeptCode() : "N/A";
+            offeringsByDept.put(deptLabel, offeringsByDept.getOrDefault(deptLabel, 0L) + 1);
+        });
+        dto.setOfferingsByDepartment(offeringsByDept);
+
+        // Most Popular Courses (by enrollment)
+        Map<String, Long> courseEnrollments = new HashMap<>();
+        allOfferings.forEach(o -> {
+            if (o.getCourse() != null) {
+                String courseName = o.getCourse().getCourseName();
+                courseEnrollments.put(courseName, courseEnrollments.getOrDefault(courseName, 0L) + o.getEnrolledCount());
+            }
+        });
+        // Sort and limit to top 5 for DTO
+        dto.setEnrollmentByCourse(courseEnrollments.entrySet().stream()
+            .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+            .limit(5)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+
+        // Top Rated Faculty
+        Map<String, Double> facRatings = facultyRepository.findAll().stream()
+            .filter(f -> f.getRating() != null)
+            .sorted((f1, f2) -> f2.getRating().compareTo(f1.getRating()))
+            .limit(5)
+            .collect(Collectors.toMap(
+                f -> f.getUser().getEmail().split("@")[0], // Use email prefix as name for chart
+                f -> f.getRating().doubleValue()
+            ));
+        dto.setFacultyRatings(facRatings);
 
         // Avg CGPA by Dept
         Map<String, Double> avgCgpaByDept = new HashMap<>();

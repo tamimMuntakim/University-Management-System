@@ -89,6 +89,46 @@ const Analytics = () => {
         ]
     };
 
+    // Course Offerings by Dept
+    const offeringsByDeptData = {
+        labels: Object.keys(data.offeringsByDepartment || {}),
+        datasets: [{
+            label: 'Course Offerings',
+            data: Object.values(data.offeringsByDepartment || {}),
+            backgroundColor: 'rgba(59, 130, 246, 0.6)',
+            borderColor: 'rgb(59, 130, 246)',
+            borderWidth: 1,
+        }]
+    };
+
+    // Top Popular Courses
+    const sortedPopularCourses = Object.entries(data.enrollmentByCourse || {})
+        .sort(([, a], [, b]) => b - a);
+    const popularCoursesData = {
+        labels: sortedPopularCourses.map(([name]) => name),
+        datasets: [{
+            label: 'Enrolled Students',
+            data: sortedPopularCourses.map(([, count]) => count),
+            backgroundColor: chartColors,
+            borderRadius: 8,
+        }]
+    };
+
+    // Top Rated Faculty
+    const sortedFaculty = Object.entries(data.facultyRatings || {})
+        .sort(([, a], [, b]) => b - a);
+    const facultyRatingData = {
+        labels: sortedFaculty.map(([name]) => name),
+        datasets: [{
+            label: 'Faculty Rating',
+            data: sortedFaculty.map(([, rating]) => rating),
+            backgroundColor: 'rgba(16, 185, 129, 0.6)',
+            borderColor: 'rgb(16, 185, 129)',
+            borderWidth: 1,
+            borderRadius: 4,
+        }]
+    };
+
     // Gender distributions
     const genderData = (map) => ({
         labels: Object.keys(map || {}),
@@ -159,7 +199,7 @@ const Analytics = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Dept Comparison */}
+                {/* --- Demographics & Population --- */}
                 <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
                         <HiOutlineChartBar className="text-primary" />
@@ -183,7 +223,51 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                {/* Avg CGPA Trends */}
+                {/* Courses Count */}
+                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                    <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
+                        <HiOutlineBookOpen className="text-accent" />
+                        Courses per Department
+                    </h4>
+                    <div className="flex-1 min-h-[300px]">
+                        <Bar 
+                            data={coursesByDeptData} 
+                            options={{ 
+                                indexAxis: 'y', 
+                                responsive: true, 
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false } },
+                                scales: {
+                                    x: {
+                                        beginAtZero: true,
+                                        min: 0
+                                    }
+                                }
+                            }} 
+                        />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:col-span-2">
+                    <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                        <h4 className="font-bold mb-6 text-center text-xs uppercase tracking-widest text-base-content/50">Student Gender Distribution</h4>
+                        <div className="flex justify-center items-center flex-1">
+                            <div className="w-full max-w-[150px]">
+                                <Pie data={genderData(data.studentsByGender)} options={{ plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                        <h4 className="font-bold mb-6 text-center text-xs uppercase tracking-widest text-base-content/50">Faculty Gender Distribution</h4>
+                        <div className="flex justify-center items-center flex-1">
+                            <div className="w-full max-w-[150px]">
+                                <Pie data={genderData(data.facultiesByGender)} options={{ plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* --- Academic Performance & Excellence --- */}
                 <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
                         <HiOutlineTrendingUp className="text-secondary" />
@@ -208,46 +292,56 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                {/* Gender Pies */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
-                        <h4 className="font-bold mb-6 text-center text-xs uppercase tracking-widest text-base-content/50">Student Gender Distribution</h4>
-                        <div className="flex justify-center items-center flex-1">
-                            <div className="w-full max-w-[180px]">
-                                <Pie data={genderData(data.studentsByGender)} options={{ plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
-                        <h4 className="font-bold mb-6 text-center text-xs uppercase tracking-widest text-base-content/50">Faculty Gender Distribution</h4>
-                        <div className="flex justify-center items-center flex-1">
-                            <div className="w-full max-w-[180px]">
-                                <Pie data={genderData(data.facultiesByGender)} options={{ plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Courses Count */}
                 <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
-                        <HiOutlineBookOpen className="text-accent" />
-                        Courses per Department
+                        <HiOutlineAcademicCap className="text-success" />
+                        Top Rated Faculty
                     </h4>
                     <div className="flex-1 min-h-[300px]">
                         <Bar 
-                            data={coursesByDeptData} 
+                            data={facultyRatingData} 
                             options={{ 
-                                indexAxis: 'y', 
                                 responsive: true, 
                                 maintainAspectRatio: false,
                                 plugins: { legend: { display: false } },
-                                scales: {
-                                    x: {
-                                        beginAtZero: true,
-                                        min: 0
-                                    }
-                                }
+                                scales: { y: { beginAtZero: true, max: 5 } }
+                            }} 
+                        />
+                    </div>
+                </div>
+
+                {/* --- Offerings & Popularity --- */}
+                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                    <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
+                        <HiOutlineBookOpen className="text-primary" />
+                        Offerings per Department
+                    </h4>
+                    <div className="flex-1 min-h-[300px]">
+                        <Bar 
+                            data={offeringsByDeptData} 
+                            options={{ 
+                                responsive: true, 
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false } },
+                                scales: { y: { beginAtZero: true } }
+                            }} 
+                        />
+                    </div>
+                </div>
+
+                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                    <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
+                        <HiOutlineTrendingUp className="text-accent" />
+                        Most Popular Courses
+                    </h4>
+                    <div className="flex-1 min-h-[300px]">
+                        <Bar 
+                            data={popularCoursesData} 
+                            options={{ 
+                                indexAxis: 'y',
+                                responsive: true, 
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false } }
                             }} 
                         />
                     </div>
