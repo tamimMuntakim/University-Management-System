@@ -18,6 +18,7 @@ import {
     HiOutlineCheckCircle,
     HiOutlineChartBar
 } from 'react-icons/hi';
+import ThemeToggle from '../Components/ThemeToggle';
 
 const BaseLayout = ({ roleTitle, menuItems }) => {
     const { logout, user } = useAuth();
@@ -104,6 +105,7 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                 <header className="h-20 bg-base-100 flex items-center justify-between px-8 border-b border-base-200">
                     <h1 className="text-xl font-bold text-base-content">{roleTitle} Dashboard</h1>
                     <div className="flex items-center gap-4">
+                        <ThemeToggle />
                         <div className="dropdown dropdown-end dropdown-hover">
                             <div tabIndex={0} role="button" className="avatar placeholder">
                                 <div className="bg-neutral text-neutral-content rounded-full w-10 flex items-center justify-center font-black ring ring-primary ring-offset-base-100 ring-offset-2 hover:scale-110 transition-transform">

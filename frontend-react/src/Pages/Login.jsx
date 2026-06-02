@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useAuth } from '../Providers/AuthProvider';
 import api from '../Services/api';
 import Swal from 'sweetalert2';
+import ThemeToggle from '../Components/ThemeToggle';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -42,7 +43,10 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-base-200">
+        <div className="min-h-screen flex items-center justify-center bg-base-200 relative">
+            <div className="absolute top-4 right-4 animate-fade-in">
+                <ThemeToggle />
+            </div>
             <div className="card w-96 bg-base-100 shadow-xl">
                 <div className="card-body">
                     <h2 className="card-title justify-center text-2xl font-bold mb-4">University Login</h2>
