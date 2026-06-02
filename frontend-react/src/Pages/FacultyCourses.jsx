@@ -49,7 +49,7 @@ const FacultyCourses = () => {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {courses.map((offering) => (
-                        <div key={offering.id} className="card bg-base-100 border border-base-200 shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div key={offering.id} className="card bg-base-100 border border-base-300 shadow-sm hover:shadow-xl transition-all duration-300 group">
                             <div className="card-body p-6">
                                 <div className="flex justify-between items-start mb-2">
                                     <span className="badge badge-primary badge-outline font-black py-3">Section {offering.section}</span>

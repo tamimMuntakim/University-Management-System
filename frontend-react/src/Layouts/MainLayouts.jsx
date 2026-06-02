@@ -50,12 +50,19 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
     };
 
     return (
-        <div className="flex h-screen bg-base-300">
+        <div className="flex h-screen bg-base-200">
             {/* Sidebar */}
-            <aside className="w-72 bg-base-100 flex flex-col shadow-2xl z-20">
-                <div className="p-8 border-b border-base-200">
-                    <h2 className="text-2xl font-black text-primary tracking-tighter italic">UniMS</h2>
-                    <p className="text-xs font-bold text-base-content/40 uppercase tracking-widest mt-1">{roleTitle} Portal</p>
+            <aside className="w-72 bg-base-100 flex flex-col shadow-2xl z-20 border-r border-base-300">
+                <div className="p-8 bg-gradient-to-br from-primary/5 to-transparent border-b border-base-300">
+                    <div className="flex items-center gap-2">
+                        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+                            <HiOutlineAcademicCap className="text-primary-content text-2xl" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-black text-primary tracking-tighter leading-none">UniMS</h2>
+                            <p className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em] mt-1">{roleTitle}</p>
+                        </div>
+                    </div>
                 </div>
                 
                 <nav className="flex-1 p-4 overflow-y-auto space-y-1">
@@ -65,20 +72,31 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                             to={item.path}
                             end
                             className={({ isActive }) => `
-                                flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
+                                sidebar-link
                                 ${isActive 
-                                    ? 'bg-primary text-primary-content shadow-lg shadow-primary/20 font-bold' 
-                                    : 'text-base-content/70 hover:bg-base-200 hover:text-primary'}
+                                    ? 'bg-primary text-primary-content shadow-lg shadow-primary/25 font-bold scale-[1.02]' 
+                                    : 'text-base-content/60 hover:bg-primary/5 hover:text-primary'}
                             `}
                         >
-                            <span className="text-xl">{item.icon}</span>
-                            <span>{item.label}</span>
+                            {({ isActive }) => (
+                                <>
+                                    <span className={`text-xl transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-primary-content' : 'text-primary/70'}`}>
+                                        {item.icon}
+                                    </span>
+                                    <span>{item.label}</span>
+                                </>
+                            )}
                         </NavLink>
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-base-200">
-                    <div className="bg-success/5 border border-success/10 rounded-xl p-2 mb-4 flex items-center justify-between">
+                <div className="p-4 border-t border-base-300 space-y-4">
+                    <div className="flex items-center justify-between px-2">
+                        <span className="text-xs font-bold text-base-content/40 uppercase tracking-widest">Settings</span>
+                        <ThemeToggle />
+                    </div>
+
+                    <div className="bg-base-200/50 border border-base-300 rounded-2xl p-3 flex items-center justify-between shadow-inner">
                         <div className="flex items-center justify-center gap-2">
                             <div className="relative flex items-center">
                                 <HiOutlineCheckCircle className="text-success text-xl" />
@@ -102,7 +120,7 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col overflow-hidden">
-                <header className="h-20 bg-base-100 flex items-center justify-between px-8 border-b border-base-200">
+                <header className="h-20 bg-base-100 flex items-center justify-between px-8 border-b border-base-300">
                     <h1 className="text-xl font-bold text-base-content">{roleTitle} Dashboard</h1>
                     <div className="flex items-center gap-4">
                         <ThemeToggle />
@@ -112,7 +130,7 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                                     <span>{(user?.email || 'U')[0].toUpperCase()}</span>
                                 </div>
                             </div>
-                            <div tabIndex={0} className="dropdown-content z-[1] card card-compact w-64 p-0 shadow-2xl bg-base-100 border border-base-200 mt-2">
+                            <div tabIndex={0} className="dropdown-content z-[1] card card-compact w-64 p-0 shadow-2xl bg-base-100 border border-base-300 mt-2">
                                 <div className="card-body p-3">
                                     <h3 className="font-bold text-sm truncate">{user?.email || 'Guest User'}</h3>
                                     <div className="flex gap-2 items-center">

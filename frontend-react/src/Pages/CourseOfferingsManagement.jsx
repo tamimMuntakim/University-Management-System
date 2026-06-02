@@ -184,7 +184,7 @@ const CourseOfferingsManagement = () => {
                 </button>
             </div>
 
-            <div className="bg-base-100 rounded-2xl shadow-sm border border-base-200 overflow-hidden">
+            <div className="bg-base-100 rounded-2xl shadow-sm border border-base-300 overflow-hidden">
                 <div className="max-h-[600px] overflow-y-auto">
                     <table className="table table-pin-rows table-zebra">
                         <thead>
@@ -266,7 +266,7 @@ const CourseOfferingsManagement = () => {
             {/* Create Offering Modal */}
             {isModalOpen && (
                 <div className="modal modal-open backdrop-blur-sm">
-                    <div className="modal-box max-w-2xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
+                    <div className="modal-box max-w-2xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-300 shadow-2xl">
                         <div className="bg-primary p-6 text-primary-content">
                             <h3 className="font-bold text-xl flex items-center gap-2">
                                 <HiOutlineStatusOnline /> Offer a New Course
@@ -362,7 +362,7 @@ const CourseOfferingsManagement = () => {
             {/* Edit Offering Modal */}
             {isEditModalOpen && (
                 <div className="modal modal-open backdrop-blur-sm">
-                    <div className="modal-box max-w-2xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
+                    <div className="modal-box max-w-2xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-300 shadow-2xl">
                         <div className="bg-success p-6 text-success-content">
                             <h3 className="font-bold text-xl flex items-center gap-2">
                                 <HiOutlinePencil /> Edit Course Offering

@@ -78,7 +78,7 @@ const Grades = () => {
 
             {/* Stats Summary */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="card bg-base-100 border border-base-200 shadow-sm p-4 flex flex-row items-center gap-4">
+                <div className="card bg-base-100 border border-base-300 shadow-sm p-4 flex flex-row items-center gap-4">
                     <div className="p-3 bg-primary/10 text-primary rounded-xl text-2xl">
                         <HiOutlineStar />
                     </div>
@@ -87,7 +87,7 @@ const Grades = () => {
                         <p className="text-2xl font-black text-primary">{stats.cgpa?.toFixed(2) || '0.00'}</p>
                     </div>
                 </div>
-                <div className="card bg-base-100 border border-base-200 shadow-sm p-4 flex flex-row items-center gap-4">
+                <div className="card bg-base-100 border border-base-300 shadow-sm p-4 flex flex-row items-center gap-4">
                     <div className="p-3 bg-success/10 text-success rounded-xl text-2xl">
                         <HiOutlineClipboardCheck />
                     </div>
@@ -96,7 +96,7 @@ const Grades = () => {
                         <p className="text-2xl font-black text-success">{stats.creditsCompleted || 0}</p>
                     </div>
                 </div>
-                <div className="card bg-base-100 border border-base-200 shadow-sm p-4 flex flex-row items-center gap-4">
+                <div className="card bg-base-100 border border-base-300 shadow-sm p-4 flex flex-row items-center gap-4">
                     <div className="p-3 bg-info/10 text-info rounded-xl text-2xl">
                         <HiOutlineCollection />
                     </div>
@@ -105,7 +105,7 @@ const Grades = () => {
                         <p className="text-2xl font-black text-info">{stats.totalEnrollments || 0}</p>
                     </div>
                 </div>
-                <div className="card bg-base-100 border border-base-200 shadow-sm p-4 flex flex-row items-center gap-4">
+                <div className="card bg-base-100 border border-base-300 shadow-sm p-4 flex flex-row items-center gap-4">
                     <div className="p-3 bg-warning/10 text-warning rounded-xl text-2xl">
                         <HiOutlineAcademicCap />
                     </div>
@@ -132,7 +132,7 @@ const Grades = () => {
                                 <div className="h-[1px] flex-1 bg-base-300"></div>
                             </div>
                             
-                            <div className="overflow-x-auto bg-base-100 rounded-xl border border-base-200 shadow-sm">
+                            <div className="overflow-x-auto bg-base-100 rounded-xl border border-base-300 shadow-sm">
                                 <table className="table table-zebra w-full">
                                     <thead className="bg-base-200/50">
                                         <tr>

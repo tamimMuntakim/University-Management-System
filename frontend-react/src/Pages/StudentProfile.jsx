@@ -87,7 +87,7 @@ const StudentProfile = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Profile Summary Card */}
                 <div className="lg:col-span-1">
-                    <div className="card bg-base-100 border border-base-200 shadow-sm p-6">
+                    <div className="card bg-base-100 border border-base-300 shadow-sm p-6">
                         <div className="flex flex-col items-center">
                             <div className="avatar placeholder mb-4">
                                 <div className="bg-primary text-primary-content rounded-full w-24 flex items-center justify-center">
@@ -133,7 +133,7 @@ const StudentProfile = () => {
 
                 {/* Edit Form Card */}
                 <div className="lg:col-span-2">
-                    <div className="card bg-base-100 border border-base-200 shadow-sm">
+                    <div className="card bg-base-100 border border-base-300 shadow-sm">
                         <div className="card-body">
                             <h4 className="card-title text-base-content/80 mb-4 font-bold">Account Settings</h4>
                             <form onSubmit={handleSubmit} className="space-y-4">

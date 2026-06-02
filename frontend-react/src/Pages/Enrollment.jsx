@@ -135,7 +135,7 @@ const Enrollment = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {myEnrollments.filter(e => e.status !== 'DROPPED').map((enrollment) => (
-                            <div key={enrollment.id} className="card bg-base-100 border border-base-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div key={enrollment.id} className="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-shadow">
                                 <div className="card-body p-5">
                                     <div className="flex justify-between items-start mb-2">
                                         <h4 className="text-sm font-bold text-primary tracking-wider uppercase">
@@ -181,7 +181,7 @@ const Enrollment = () => {
                     <HiOutlineBookOpen className="text-primary w-6 h-6" />
                     Available Course Offerings
                 </div>
-                <div className="overflow-x-auto bg-base-100 rounded-xl border border-base-200 shadow-sm">
+                <div className="overflow-x-auto bg-base-100 rounded-xl border border-base-300 shadow-sm">
                     <table className="table table-zebra w-full text-base-content">
                         <thead className="bg-base-200/50">
                             <tr>

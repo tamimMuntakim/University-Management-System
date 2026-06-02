@@ -154,7 +154,7 @@ const CoursesManagement = () => {
         <div className="space-y-6">
             {/* Statistics Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                <div className="bg-base-100 p-3 rounded-xl border border-base-300 shadow-sm flex items-center gap-3">
                     <div className="p-2 bg-primary/10 text-primary rounded-lg">
                         <HiOutlineBookOpen size={20} />
                     </div>
@@ -163,7 +163,7 @@ const CoursesManagement = () => {
                         <h4 className="text-lg font-black leading-none text-primary">{courses.length}</h4>
                     </div>
                 </div>
-                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                <div className="bg-base-100 p-3 rounded-xl border border-base-300 shadow-sm flex items-center gap-3">
                     <div className="p-2 bg-info/10 text-info rounded-lg">
                         <HiOutlineAcademicCap size={20} />
                     </div>
@@ -174,7 +174,7 @@ const CoursesManagement = () => {
                         </h4>
                     </div>
                 </div>
-                <div className="bg-base-100 p-3 rounded-xl border border-base-200 shadow-sm flex items-center gap-3">
+                <div className="bg-base-100 p-3 rounded-xl border border-base-300 shadow-sm flex items-center gap-3">
                     <div className="p-2 bg-accent/10 text-accent rounded-lg">
                         <HiOutlineCalculator size={20} />
                     </div>
@@ -218,7 +218,7 @@ const CoursesManagement = () => {
                 </button>
             </div>
 
-            <div className="bg-base-100 rounded-2xl shadow-sm border border-base-200 overflow-hidden">
+            <div className="bg-base-100 rounded-2xl shadow-sm border border-base-300 overflow-hidden">
                 <div className="max-h-[500px] overflow-y-auto">
                     <table className="table table-pin-rows table-zebra">
                         <thead>
@@ -276,7 +276,7 @@ const CoursesManagement = () => {
             {/* Add Modal */}
             {isModalOpen && (
                 <div className="modal modal-open backdrop-blur-sm">
-                    <div className="modal-box max-w-xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
+                    <div className="modal-box max-w-xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-300 shadow-2xl">
                         <div className="bg-primary p-6 text-primary-content">
                             <h3 className="font-bold text-xl flex items-center gap-2">
                                 <HiOutlineBookOpen /> Create New Course
@@ -346,7 +346,7 @@ const CoursesManagement = () => {
             {/* Edit Modal */}
             {isEditModalOpen && (
                 <div className="modal modal-open backdrop-blur-sm">
-                    <div className="modal-box max-w-xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-200 shadow-2xl">
+                    <div className="modal-box max-w-xl bg-base-100 p-0 overflow-hidden rounded-2xl border border-base-300 shadow-2xl">
                         <div className="bg-success p-6 text-success-content">
                             <h3 className="font-bold text-xl flex items-center gap-2">
                                 <HiOutlinePencil /> Edit Course Details

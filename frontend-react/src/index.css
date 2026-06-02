@@ -1,2 +1,70 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+@theme {
+  --color-primary: #4f46e5;            /* Premium Indigo 600 */
+  --color-primary-content: #ffffff;
+  --color-secondary: #0ea5e9;          /* Sky 500 */
+  --color-secondary-content: #ffffff;
+  --color-accent: #0f172a;             /* Slate 900 */
+  --color-accent-content: #ffffff;
+  --color-neutral: #334155;            /* Slate 700 */
+  --color-neutral-content: #ffffff;
+  --color-base-100: #ffffff;           /* Pure white for containers */
+  --color-base-200: #f1f5f9;           /* Slate 100 - Stronger background separation */
+  --color-base-300: #cbd5e1;           /* Slate 300 - More defined borders */
+  --color-base-content: #0f172a;       /* Slate 900 - Better text contrast */
+
+  --radius-box: 1rem;
+  --radius-btn: 0.5rem;
+}
+
+@layer base {
+  body {
+    @apply transition-colors duration-300 text-base-content antialiased;
+    background-image: radial-gradient(at 0% 0%, var(--color-primary) 0, transparent 5%),
+                      radial-gradient(at 100% 100%, var(--color-secondary) 0, transparent 5%);
+    background-attachment: fixed;
+  }
+  
+  /* Smooth scrollbar for convenience */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-base-200;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-base-300 rounded-full hover:bg-neutral/30 transition-colors;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-base-100/80 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium;
+  }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradient-x {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-x {
+    animation: gradient-x 3s ease infinite;
+}
+

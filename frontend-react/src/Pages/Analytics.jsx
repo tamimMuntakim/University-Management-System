@@ -185,7 +185,7 @@ const Analytics = () => {
                     { label: 'Departments', value: data.totalDepartments, icon: <HiOutlineOfficeBuilding />, color: 'text-accent', figure: 'text-accent' },
                     { label: 'Total Courses', value: data.totalCourses, icon: <HiOutlineBookOpen />, color: 'text-info', figure: 'text-info' }
                 ].map((stat, idx) => (
-                    <div key={idx} className="stat bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-all hover:shadow-md">
+                    <div key={idx} className="stat bg-base-100 border border-base-300 rounded-2xl shadow-sm transition-all hover:shadow-md">
                         <div className={`stat-figure ${stat.figure} opacity-30`}>
                             {React.cloneElement(stat.icon, { size: 40 })}
                         </div>
@@ -200,7 +200,7 @@ const Analytics = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* --- Demographics & Population --- */}
-                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
                         <HiOutlineChartBar className="text-primary" />
                         Population by Department
@@ -224,7 +224,7 @@ const Analytics = () => {
                 </div>
 
                 {/* Courses Count */}
-                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
                         <HiOutlineBookOpen className="text-accent" />
                         Courses per Department
@@ -249,7 +249,7 @@ const Analytics = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:col-span-2">
-                    <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                    <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                         <h4 className="font-bold mb-6 text-center text-xs uppercase tracking-widest text-base-content/50">Student Gender Distribution</h4>
                         <div className="flex justify-center items-center flex-1">
                             <div className="w-full max-w-[150px]">
@@ -257,7 +257,7 @@ const Analytics = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                    <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                         <h4 className="font-bold mb-6 text-center text-xs uppercase tracking-widest text-base-content/50">Faculty Gender Distribution</h4>
                         <div className="flex justify-center items-center flex-1">
                             <div className="w-full max-w-[150px]">
@@ -268,7 +268,7 @@ const Analytics = () => {
                 </div>
 
                 {/* --- Academic Performance & Excellence --- */}
-                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
                         <HiOutlineTrendingUp className="text-secondary" />
                         Average CGPA by Department
@@ -292,7 +292,7 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
                         <HiOutlineAcademicCap className="text-success" />
                         Top Rated Faculty
@@ -311,7 +311,7 @@ const Analytics = () => {
                 </div>
 
                 {/* --- Offerings & Popularity --- */}
-                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
                         <HiOutlineBookOpen className="text-primary" />
                         Offerings per Department
@@ -329,7 +329,7 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                <div className="card bg-base-100 border border-base-200 rounded-2xl shadow-sm p-6 overflow-hidden">
+                <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                     <h4 className="font-bold mb-6 flex items-center gap-2 text-base-content/80">
                         <HiOutlineTrendingUp className="text-accent" />
                         Most Popular Courses
