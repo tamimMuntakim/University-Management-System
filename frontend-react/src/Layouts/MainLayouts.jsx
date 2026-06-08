@@ -60,7 +60,7 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-primary tracking-tighter leading-none">UniMS</h2>
-                            <p className="text-[10px] font-black text-base-content/40 uppercase tracking-[0.2em] mt-1">{roleTitle}</p>
+                            <p className="text-[10px] font-black text-base-content/70 uppercase tracking-[0.2em] mt-1">{roleTitle}</p>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                                 sidebar-link
                                 ${isActive 
                                     ? 'bg-primary text-primary-content shadow-lg shadow-primary/25 font-bold scale-[1.02]' 
-                                    : 'text-base-content/60 hover:bg-primary/5 hover:text-primary'}
+                                    : 'text-base-content/90 hover:bg-primary/5 hover:text-primary'}
                             `}
                         >
                             {({ isActive }) => (
@@ -92,7 +92,7 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
 
                 <div className="p-4 border-t border-base-300 space-y-4">
                     <div className="flex items-center justify-between px-2">
-                        <span className="text-xs font-bold text-base-content/40 uppercase tracking-widest">Settings</span>
+                        <span className="text-xs font-bold text-base-content/70 uppercase tracking-widest">Settings</span>
                         <ThemeToggle />
                     </div>
 

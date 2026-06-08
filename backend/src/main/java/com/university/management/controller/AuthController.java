@@ -2,20 +2,15 @@ package com.university.management.controller;
 
 import com.university.management.dto.LoginRequest;
 import com.university.management.dto.SignupRequest;
-import com.university.management.entity.FacultyProfile;
-import com.university.management.entity.Role;
-import com.university.management.entity.StudentProfile;
-import com.university.management.entity.User;
-import com.university.management.repository.FacultyProfileRepository;
-import com.university.management.repository.RoleRepository;
-import com.university.management.repository.StudentProfileRepository;
-import com.university.management.repository.UserRepository;
+import com.university.management.entity.*;
+import com.university.management.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -33,9 +28,12 @@ public class AuthController {
 
     @Autowired
     private FacultyProfileRepository facultyProfileRepository;
+
+    @Autowired
+    private LoginLogRepository loginLogRepository;
     
     @Autowired
-    private com.university.management.repository.DepartmentRepository departmentRepository;
+    private DepartmentRepository departmentRepository;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -112,6 +110,16 @@ public class AuthController {
             System.out.println("Password match result: " + isMatch);
             
             if (isMatch) {
+                // Log login attempt
+                user.setLastLoginAt(LocalDateTime.now());
+                userRepository.save(user);
+
+                LoginLog log = LoginLog.builder()
+                        .userId(user.getId())
+                        .email(user.getEmail())
+                        .build();
+                loginLogRepository.save(log);
+
                 String role = user.getRole().getRoleName();
                 String email = user.getEmail();
                 return ResponseEntity.ok("{\"token\": \"dummy-jwt-token\", \"role\": \"" + role + "\", \"email\": \"" + email + "\"}");

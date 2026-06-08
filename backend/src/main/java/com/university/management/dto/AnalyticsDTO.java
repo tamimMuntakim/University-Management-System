@@ -27,4 +27,7 @@ public class AnalyticsDTO {
     private Map<String, Long> offeringsByDepartment;
     private Map<String, Long> enrollmentByCourse; // Top Popular Courses
     private Map<String, Double> facultyRatings; // Top Rated Teachers
+
+    private Map<String, Long> loginsByHour;
+    private Map<String, Long> registrationsByDate;
 }
