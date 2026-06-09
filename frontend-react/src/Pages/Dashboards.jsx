@@ -75,7 +75,7 @@ export const AdminDashboard = () => {
                         {stats.totalUsers.toLocaleString()}
                     </h3>
                     <div className="flex items-center gap-2">
-                        <span className="badge badge-primary badge-sm font-black italic">GLOBAL</span>
+                        {/* <span className="badge badge-primary badge-sm font-black italic">GLOBAL</span> */}
                         <span className="text-[10px] font-bold text-base-content/90 uppercase">User Database</span>
                     </div>
                 </div>
