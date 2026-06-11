@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../Services/api';
 import PageLoader from '../Components/PageLoader';
+import AreaChart from '../Components/charts/AreaChart';
+import BarChart from '../Components/charts/BarChart';
+import DonutChart from '../Components/charts/DonutChart';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -9,11 +12,10 @@ import {
     Title,
     Tooltip,
     Legend,
-    ArcElement,
     PointElement,
     LineElement,
 } from 'chart.js';
-import { Bar, Pie, Line } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 import { 
     HiOutlineUsers, 
     HiOutlineAcademicCap, 
@@ -30,7 +32,6 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend,
-    ArcElement,
     PointElement,
     LineElement
 );
@@ -109,18 +110,6 @@ const Analytics = () => {
         ]
     };
 
-    // Course Offerings by Dept
-    const offeringsByDeptData = {
-        labels: Object.keys(data?.offeringsByDepartment || {}),
-        datasets: [{
-            label: 'Course Offerings',
-            data: Object.values(data?.offeringsByDepartment || {}),
-            backgroundColor: 'rgba(59, 130, 246, 0.6)',
-            borderColor: 'rgb(59, 130, 246)',
-            borderWidth: 1,
-        }]
-    };
-
     // Top Popular Courses
     const sortedPopularCourses = Object.entries(data?.enrollmentByCourse || {})
         .sort(([, a], [, b]) => b - a);
@@ -149,16 +138,6 @@ const Analytics = () => {
         }]
     };
 
-    // Gender distributions
-    const genderData = (map) => ({
-        labels: Object.keys(map || {}),
-        datasets: [{
-            data: Object.values(map || {}),
-            backgroundColor: chartColors,
-            borderWidth: 0,
-        }]
-    });
-
     // Courses by Dept
     const coursesByDeptData = {
         labels: Object.keys(data?.coursesByDepartment || {}),
@@ -181,34 +160,6 @@ const Analytics = () => {
             backgroundColor: 'rgba(139, 92, 246, 0.5)',
             fill: true,
             tension: 0.4,
-        }]
-    };
-
-    // Login Activity by Hour
-    const loginActivityData = {
-        labels: Object.keys(data?.loginsByHour || {}).sort(),
-        datasets: [{
-            label: 'Login Count',
-            data: Object.keys(data?.loginsByHour || {}).sort().map(h => data?.loginsByHour?.[h] || 0),
-            backgroundColor: 'rgba(59, 130, 246, 0.6)',
-            borderColor: 'rgb(59, 130, 246)',
-            borderWidth: 2,
-            tension: 0.3,
-            fill: true,
-        }]
-    };
-
-    // Registration Trend
-    const registrationTrendData = {
-        labels: Object.keys(data?.registrationsByDate || {}).sort(),
-        datasets: [{
-            label: 'New Users',
-            data: Object.keys(data?.registrationsByDate || {}).sort().map(d => data?.registrationsByDate?.[d] || 0),
-            borderColor: 'rgb(236, 72, 153)',
-            backgroundColor: 'rgba(236, 72, 153, 0.2)',
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: 'rgb(236, 72, 153)',
         }]
     };
 
@@ -257,15 +208,7 @@ const Analytics = () => {
                         Peak Login Hours (Activity)
                     </h4>
                     <div className="flex-1 min-h-[300px]">
-                        <Line 
-                            data={loginActivityData} 
-                            options={{ 
-                                responsive: true, 
-                                maintainAspectRatio: false,
-                                plugins: { legend: { display: false } },
-                                scales: { y: { beginAtZero: true } }
-                            }} 
-                        />
+                        <AreaChart data={data?.loginsByHour} color="#3b82f6" height={300} />
                     </div>
                 </div>
 
@@ -275,15 +218,7 @@ const Analytics = () => {
                         User Registration Trend
                     </h4>
                     <div className="flex-1 min-h-[300px]">
-                        <Line 
-                            data={registrationTrendData} 
-                            options={{ 
-                                responsive: true, 
-                                maintainAspectRatio: false,
-                                plugins: { legend: { display: false } },
-                                scales: { y: { beginAtZero: true } }
-                            }} 
-                        />
+                        <AreaChart data={data?.registrationsByDate} color="#ec4899" height={300} />
                     </div>
                 </div>
 
@@ -340,17 +275,13 @@ const Analytics = () => {
                     <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                         <h4 className="font-bold mb-6 text-center text-xs uppercase tracking-widest text-base-content/50">Student Gender Distribution</h4>
                         <div className="flex justify-center items-center flex-1">
-                            <div className="w-full max-w-[150px]">
-                                <Pie data={genderData(data?.studentsByGender)} options={{ plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }} />
-                            </div>
+                            <DonutChart data={data?.studentsByGender} maxSize={180} />
                         </div>
                     </div>
                     <div className="card bg-base-100 border border-base-300 rounded-2xl shadow-sm p-6 overflow-hidden">
                         <h4 className="font-bold mb-6 text-center text-xs uppercase tracking-widest text-base-content/50">Faculty Gender Distribution</h4>
                         <div className="flex justify-center items-center flex-1">
-                            <div className="w-full max-w-[150px]">
-                                <Pie data={genderData(data?.facultiesByGender)} options={{ plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }} />
-                            </div>
+                            <DonutChart data={data?.facultiesByGender} maxSize={180} />
                         </div>
                     </div>
                 </div>
@@ -405,15 +336,7 @@ const Analytics = () => {
                         Offerings per Department
                     </h4>
                     <div className="flex-1 min-h-[300px]">
-                        <Bar 
-                            data={offeringsByDeptData} 
-                            options={{ 
-                                responsive: true, 
-                                maintainAspectRatio: false,
-                                plugins: { legend: { display: false } },
-                                scales: { y: { beginAtZero: true } }
-                            }} 
-                        />
+                        <BarChart data={data?.offeringsByDepartment} height={300} />
                     </div>
                 </div>
 
