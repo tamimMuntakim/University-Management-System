@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useNavigate, NavLink } from 'react-router';
+import { Outlet, useNavigate, NavLink, Link } from 'react-router';
 import { useAuth } from '../Providers/AuthProvider';
 import Swal from 'sweetalert2';
 import { 
@@ -53,8 +53,8 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
         <div className="flex h-screen bg-base-200">
             {/* Sidebar */}
             <aside className="w-72 bg-base-100 flex flex-col shadow-2xl z-20 border-r border-base-300">
-                <div className="p-8 bg-gradient-to-br from-primary/5 to-transparent border-b border-base-300">
-                    <div className="flex items-center gap-2">
+                <div className="p-8 bg-gradient-to-br from-primary/5 to-transparent ">
+                    <Link className="flex items-center gap-2" to={`/${roleTitle.toLowerCase()}`}>
                         <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
                             <HiOutlineAcademicCap className="text-primary-content text-2xl" />
                         </div>
@@ -62,7 +62,7 @@ const BaseLayout = ({ roleTitle, menuItems }) => {
                             <h2 className="text-2xl font-black text-primary tracking-tighter leading-none">UniMS</h2>
                             <p className="text-[10px] font-black text-base-content/70 uppercase tracking-[0.2em] mt-1">{roleTitle}</p>
                         </div>
-                    </div>
+                    </Link>
                 </div>
                 
                 <nav className="flex-1 p-4 overflow-y-auto space-y-1">
