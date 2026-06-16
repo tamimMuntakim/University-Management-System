@@ -74,6 +74,9 @@ public class AnalyticsDTO {
     private Map<String, Long>   loginsByHour;
     private Map<String, Long>   registrationsByDate;
 
+    // ── NEW: Login punchcard (weekday × hour) ─────────────────────────────────
+    private Map<String, Long>   loginsByWeekdayHour;   // "dow-hour" -> count (dow 0=Sun … 6=Sat)
+
     // ── NEW: Status breakdowns ────────────────────────────────────────────────
     private Map<String, Long>   enrollmentStatusDistribution;  // ENROLLED / DROPPED / COMPLETED
     private Map<String, Long>   offeringStatusDistribution;    // UPCOMING / ACTIVE / COMPLETED

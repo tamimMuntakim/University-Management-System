@@ -13,4 +13,7 @@ public interface LoginLogRepository extends JpaRepository<LoginLog, Long> {
     
     @Query(value = "SELECT EXTRACT(HOUR FROM login_time) as hour, COUNT(*) as count FROM login_logs GROUP BY EXTRACT(HOUR FROM login_time) ORDER BY hour", nativeQuery = true)
     List<Map<String, Object>> getLoginCountByHour();
+
+    @Query(value = "SELECT EXTRACT(DOW FROM login_time) as dow, EXTRACT(HOUR FROM login_time) as hour, COUNT(*) as count FROM login_logs GROUP BY EXTRACT(DOW FROM login_time), EXTRACT(HOUR FROM login_time)", nativeQuery = true)
+    List<Map<String, Object>> getLoginCountByWeekdayHour();
 }

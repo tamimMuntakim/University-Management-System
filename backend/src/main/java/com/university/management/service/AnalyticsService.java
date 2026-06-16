@@ -231,6 +231,24 @@ public class AnalyticsService {
             }
             dto.setLoginsByHour(loginsByHour);
 
+            // ── Login Activity by Weekday × Hour (punchcard) ─────────────────
+            Map<String, Long> loginsByWeekdayHour = new HashMap<>();
+            try {
+                loginLogRepository.getLoginCountByWeekdayHour().forEach(row -> {
+                    Number dow   = (Number) row.get("dow");
+                    Number hour  = (Number) row.get("hour");
+                    Number count = (Number) row.get("count");
+                    if (dow != null && hour != null && count != null) {
+                        loginsByWeekdayHour.put(
+                                dow.intValue() + "-" + hour.intValue(),
+                                count.longValue());
+                    }
+                });
+            } catch (Exception e) {
+                log.error("Error fetching login weekday-hour analysis: {}", e.getMessage());
+            }
+            dto.setLoginsByWeekdayHour(loginsByWeekdayHour);
+
             // ── Registration Trend ───────────────────────────────────────────
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             try {
