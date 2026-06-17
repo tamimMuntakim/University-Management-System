@@ -14,8 +14,10 @@ const DEPT_COLORS = [
  *
  * @param {Object} data   - { deptCode: [courseName, ...], ... }
  * @param {number} height - SVG height in px
+ * @param {number} clusterSpread - 0–1, how far apart department clusters sit
+ *                                 (1 = full canvas, lower = tighter together)
  */
-const ForceGraph = ({ data = {}, height = 500 }) => {
+const ForceGraph = ({ data = {}, height = 500, clusterSpread = 0.6 }) => {
     const svgRef        = useRef(null);
     const containerRef  = useRef(null);
     const tooltipRef    = useRef(null);
@@ -50,9 +52,13 @@ const ForceGraph = ({ data = {}, height = 500 }) => {
             const col   = di % cols;
             const row   = Math.floor(di / cols);
 
-            // Cluster centre — nodes are attracted here via forceX/Y
-            const cx = (col + 0.5) * cellW;
-            const cy = (row + 0.5) * cellH;
+            // Cluster centre — nodes are attracted here via forceX/Y.
+            // clusterSpread (<1) pulls every anchor toward the canvas centre,
+            // which is the main lever for the gap between departments.
+            const gx = (col + 0.5) * cellW;
+            const gy = (row + 0.5) * cellH;
+            const cx = width  / 2 + (gx - width  / 2) * clusterSpread;
+            const cy = height / 2 + (gy - height / 2) * clusterSpread;
 
             // Department hub node
             nodes.push({
@@ -92,10 +98,19 @@ const ForceGraph = ({ data = {}, height = 500 }) => {
 
         // Zoom layer
         const zoomG = svg.append('g');
+        const zoom = d3.zoom()
+            .scaleExtent([0.3, 6])   // [min zoom-out, max zoom-in]
+            .on('zoom', event => zoomG.attr('transform', event.transform));
+        svg.call(zoom);
+
+        // Open at 1.5× by default, kept centred on the canvas
+        const initialScale = 1.5;
         svg.call(
-            d3.zoom()
-                .scaleExtent([0.3, 3])
-                .on('zoom', event => zoomG.attr('transform', event.transform))
+            zoom.transform,
+            d3.zoomIdentity
+                .translate(width / 2, height / 2)
+                .scale(initialScale)
+                .translate(-width / 2, -height / 2)
         );
 
         // ── Links ────────────────────────────────────────────────────────────
@@ -195,9 +210,10 @@ const ForceGraph = ({ data = {}, height = 500 }) => {
             .force('link',      d3.forceLink(links).id(d => d.id).distance(65).strength(0.85))
             .force('charge',    d3.forceManyBody().strength(-110))
             .force('collision', d3.forceCollide(d => d.r + 5).iterations(3))
-            // Pull each node toward its cluster centre — keeps groups disjoint
-            .force('x',         d3.forceX(d => d.cx).strength(0.2))
-            .force('y',         d3.forceY(d => d.cy).strength(0.2));
+            // Pull each node toward its cluster centre — keeps groups disjoint.
+            // Slightly stronger so clusters hug their (now compressed) anchors.
+            .force('x',         d3.forceX(d => d.cx).strength(0.3))
+            .force('y',         d3.forceY(d => d.cy).strength(0.3));
 
         simRef.current = sim;
 
@@ -212,7 +228,7 @@ const ForceGraph = ({ data = {}, height = 500 }) => {
         });
 
         return () => sim.stop();
-    }, [data, width, height]);
+    }, [data, width, height, clusterSpread]);
 
     const deptEntries = Object.entries(data).filter(([, v]) => Array.isArray(v));
 
